@@ -38,7 +38,6 @@ O projeto consiste em:
 
 A estrutura do projeto é organizada da seguinte forma:
 
-
 - src/
   - Blog.Web/ - Projeto MVC
   - Blog.Api/ - API RESTful
@@ -66,15 +65,15 @@ A estrutura do projeto é organizada da seguinte forma:
 ### **Passos para Execução**
 
 1. **Clone o Repositório:**
-   - `git clone https://github.com/seu-usuario/nome-do-repositorio.git`
-   - `cd nome-do-repositorio`
+   - `git clone https://github.com/pedrogutierres/blogsharp.git`
+   - `cd blogsharp`
 
 2. **Configuração do Banco de Dados:**
    - No arquivo `appsettings.json`, configure a string de conexão do SQL Server.
    - Rode o projeto para que a configuração do Seed crie o banco e popule com os dados básicos
 
 3. **Executar a Aplicação MVC:**
-   - `cd src/Blog.Mvc/`
+   - `cd src/Blog.Web/`
    - `dotnet run`
    - Acesse a aplicação em: http://localhost:5000
 
