@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Web.Areas.Identity.Pages.Account
@@ -19,6 +20,7 @@ namespace Blog.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ApplicationDbContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
@@ -27,6 +29,7 @@ namespace Blog.Web.Areas.Identity.Pages.Account
 
         public RegisterModel(
             ApplicationDbContext context,
+            RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
@@ -34,6 +37,7 @@ namespace Blog.Web.Areas.Identity.Pages.Account
             IEmailSender emailSender)
         {
             _context = context;
+            _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -95,10 +99,33 @@ namespace Blog.Web.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailConfirmedAsync(user, true, CancellationToken.None);
 
+                var existeUsuarioCadastrado = await _userManager.Users.AnyAsync();
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
+                    if (!existeUsuarioCadastrado)
+                    {
+                        if (!await _roleManager.RoleExistsAsync("Administrador"))
+                        {
+                            var role = new IdentityRole();
+                            role.Name = "Administrador";
+                            await _roleManager.CreateAsync(role);
+                        }
+
+                        await _userManager.AddToRoleAsync(user, "Administrador");
+                    }
+
+                    if (!await _roleManager.RoleExistsAsync("Autor"))
+                    {
+                        var role = new IdentityRole();
+                        role.Name = "Autor";
+                        await _roleManager.CreateAsync(role);
+                    }
+
+                    await _userManager.AddToRoleAsync(user, "Autor");
+
                     var autor = new Autor
                     {
                         Id = Guid.Parse(user.Id),
