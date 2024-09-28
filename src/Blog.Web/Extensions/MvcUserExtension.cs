@@ -13,6 +13,15 @@ namespace Blog.Web.Extensions
         public static string FullName(this ClaimsPrincipal user)
         {
             return user.FindFirst("FullName")?.Value;
+
+        }
+        public static string DisplayName(this ClaimsPrincipal user)
+        {
+            var fullName = user.FullName();
+            if (!string.IsNullOrEmpty(fullName)) return fullName;
+            var firstName = user.FirstName();
+            if (!string.IsNullOrEmpty(firstName)) return firstName;
+            return user.Identity?.Name;
         }
 
         public static async Task<IList<Claim>> GetCustomClaimsAsync(this UserManager<IdentityUser> userManager, IdentityUser user, Autor autor)
