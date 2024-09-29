@@ -1,0 +1,40 @@
+﻿@model Blog.Data.Models.Post
+
+@{
+    ViewData["Title"] = Model.Titulo;
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-12 col-lg-10 mt-lg-5">
+        <h1 class="fw-bold">@Model.Titulo</h1>
+
+        <div class="d-flex justify-content-between mt-4">
+            <div class="d-flex justify-content-start align-items-center">
+                <i class="far fa-circle-user fa-2xl m-2"></i>
+                <div class="d-flex flex-column">
+                    <span class="fw-bold">@Model.Autor.Nome @Model.Autor.Sobrenome</span>
+                    <small class="fw-bolder opacity-50">Autor</small>
+                </div>
+            </div>
+           
+        </div>
+
+        <hr/>
+
+        <div class="d-flex justify-content-between opacity-50">
+            <div>
+                <i class="far fa-calendar"></i>
+                <span class="ms-1" style="font-weight: 500">@Model.DataHoraCriacao.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div>
+                <span style="font-weight: 500">@ViewData["TempoDeLeitura"]</span>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <span class="text-muted">
+            @Html.DisplayFor(model => model.Conteudo)
+        </span>
+    </div>
+</div>

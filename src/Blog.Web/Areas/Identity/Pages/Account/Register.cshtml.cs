@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Common;
 
 namespace Blog.Web.Areas.Identity.Pages.Account
 {
@@ -99,56 +100,82 @@ namespace Blog.Web.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailConfirmedAsync(user, true, CancellationToken.None);
 
-                var existeUsuarioCadastrado = await _userManager.Users.AnyAsync();
-
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                try
                 {
-                    if (!existeUsuarioCadastrado)
+                    var existeUsuarioCadastrado = await _userManager.Users.AnyAsync();
+
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+
+                    if (result.Succeeded)
                     {
-                        if (!await _roleManager.RoleExistsAsync("Administrador"))
+                        if (!existeUsuarioCadastrado)
+                        {
+                            if (!await _roleManager.RoleExistsAsync("Administrador"))
+                            {
+                                var role = new IdentityRole();
+                                role.Name = "Administrador";
+                                await _roleManager.CreateAsync(role);
+                            }
+
+                            await _userManager.AddToRoleAsync(user, "Administrador");
+                        }
+
+                        if (!await _roleManager.RoleExistsAsync("Autor"))
                         {
                             var role = new IdentityRole();
-                            role.Name = "Administrador";
+                            role.Name = "Autor";
                             await _roleManager.CreateAsync(role);
                         }
 
-                        await _userManager.AddToRoleAsync(user, "Administrador");
+                        await _userManager.AddToRoleAsync(user, "Autor");
+
+                        var autor = new Autor
+                        {
+                            Id = Guid.Parse(user.Id),
+                            Nome = Input.FirstName?.Trim(),
+                            Sobrenome = Input.LastName?.Trim()
+                        };
+
+                        _context.Autores.Add(autor);
+                        await _context.SaveChangesAsync();
+
+                        _logger.LogInformation("Usuário criado com senha.");
+
+                        var customClaims = await _userManager.GetCustomClaimsAsync(user, autor);
+
+                        await _signInManager.SignInWithClaimsAsync(user, false, customClaims);
+
+                        _logger.LogInformation("Claims customizadas atualizadas.");
+
+                        return LocalRedirect(returnUrl);
                     }
 
-                    if (!await _roleManager.RoleExistsAsync("Autor"))
+                    foreach (var error in result.Errors)
                     {
-                        var role = new IdentityRole();
-                        role.Name = "Autor";
-                        await _roleManager.CreateAsync(role);
+                        ModelState.AddModelError(string.Empty, error.Description);
                     }
-
-                    await _userManager.AddToRoleAsync(user, "Autor");
-
-                    var autor = new Autor
-                    {
-                        Id = Guid.Parse(user.Id),
-                        Nome = Input.FirstName,
-                        Sobrenome = Input.LastName
-                    };
-
-                    _context.Autores.Add(autor);
-                    await _context.SaveChangesAsync();
-
-                    _logger.LogInformation("Usuário criado com senha.");
-
-                    var customClaims = await _userManager.GetCustomClaimsAsync(user, autor);
-
-                    await _signInManager.SignInWithClaimsAsync(user, false, customClaims);
-
-                    _logger.LogInformation("Claims customizadas atualizadas.");
-
-                    return LocalRedirect(returnUrl);
                 }
-                foreach (var error in result.Errors)
+                catch (DbException)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    // caso houver erro na criacao de usuario e autor, excluir o usuario criado caso tenha sido
+                    try
+                    {
+                        await _userManager.DeleteAsync(user);
+
+                        var autor = await _context.Autores.FindAsync(Guid.Parse(user.Id));
+                        if (autor != null)
+                        {
+                            _context.Autores.Remove(autor);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    catch { }
+
+                    throw;
+                }
+                catch
+                {
+                    throw;
                 }
             }
 
