@@ -1,5 +1,7 @@
 using Blog.Data;
 using Blog.Identity.Extensions;
+using Blog.Identity.Interfaces;
+using Blog.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddErrorDescriber<PortugueseIdentityErrorDescriber>();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IUser, AspNetUser>();
 
 var app = builder.Build();
 

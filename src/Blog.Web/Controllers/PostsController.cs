@@ -8,16 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using Blog.Data;
 using Blog.Data.Models;
 using Blog.Web.Components;
+using Blog.Identity.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Web.Controllers
 {
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUser _user;
 
-        public PostsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context, IUser user)
         {
             _context = context;
+            _user = user;
         }
 
         public async Task<IActionResult> Index()
@@ -41,7 +45,7 @@ namespace Blog.Web.Controllers
             }
 
             var tempoDeLeituraMinutos = CalcularTempoLeituraEmMinutos(post.Conteudo.Length);
-            ViewData["TempoDeLeitura"] = tempoDeLeituraMinutos > 1 ? $"${tempoDeLeituraMinutos} minutos de leitura" : "1 minuto de leitura";
+            ViewData["TempoDeLeitura"] = tempoDeLeituraMinutos > 1 ? $"{tempoDeLeituraMinutos} minutos de leitura" : "1 minuto de leitura";
 
             return View(post);
         }
@@ -53,18 +57,21 @@ namespace Blog.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titulo,Conteudo,Excluido,DataHoraCriacao,DataHoraAlteracao,AutorId")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Titulo,Conteudo")] Post post)
         {
-            if (ModelState.IsValid)
-            {
-                post.Id = Guid.NewGuid();
-                _context.Add(post);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AutorId"] = new SelectList(_context.Autores, "Id", "Nome", post.AutorId);
-            return View(post);
+            if (!ModelState.IsValid)
+                return View(post);
+
+            post.Id = Guid.NewGuid();
+            post.AutorId = _user.UsuarioId().Value;
+            
+            _context.Add(post);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Posts/Edit/5

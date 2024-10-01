@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog.Data.Models
 {
+    [Table("Posts")]
     public sealed class Post
     {
         [Key]
@@ -20,7 +21,7 @@ namespace Blog.Data.Models
         public DateTime DataHoraCriacao{ get; set; } = DateTime.Now;
         public DateTime? DataHoraAlteracao { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O autor do post deve ser informado.")]
         [ForeignKey("Autor")]
         public Guid AutorId { get; set; }
         public Autor Autor { get; set; }

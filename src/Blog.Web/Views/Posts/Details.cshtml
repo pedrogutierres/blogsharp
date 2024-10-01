@@ -4,7 +4,7 @@
     ViewData["Title"] = Model.Titulo;
 }
 
-<div class="row justify-content-center mt-5">
+<div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10 mt-lg-5">
         <h1 class="fw-bold">@Model.Titulo</h1>
 
@@ -16,7 +16,6 @@
                     <small class="fw-bolder opacity-50">Autor</small>
                 </div>
             </div>
-           
         </div>
 
         <hr/>
@@ -33,8 +32,11 @@
         <br />
         <br />
         <br />
-        <span class="text-muted">
+        <span class="text-muted" style="white-space: pre-line">
             @Html.DisplayFor(model => model.Conteudo)
         </span>
+        <br />
+        <br />
+        <small><a href="javascript:history.back()" style="text-decoration: none">Voltar</a></small>
     </div>
 </div>

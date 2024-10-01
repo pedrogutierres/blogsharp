@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog.Data.Models
 {
+    [Table("Comentarios")]
     public sealed class Comentario
     {
         [Key]
