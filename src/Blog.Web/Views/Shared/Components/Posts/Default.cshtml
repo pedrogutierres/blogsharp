@@ -21,12 +21,11 @@
                     <p class="card-text mt-3 text-muted">
                         @if (item.ConteudoResumido.Length < 100)
                         {
-
-                            @Html.DisplayFor(modelItem => item.ConteudoResumido)
+                            @Html.Raw(item.ConteudoResumidoHtml)
                         }
                         else
                         {
-                            <span>@Html.DisplayFor(modelItem => item.ConteudoResumido)...</span>
+                            <span>@Html.Raw(item.ConteudoResumidoHtml)...</span>
                         }
                     </p>
                 </div>
