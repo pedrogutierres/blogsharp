@@ -46,6 +46,12 @@ namespace Blog.Web.Controllers
         }
 
         [Authorize]
+        public async Task<IActionResult> MeusPosts()
+        {
+            return View();
+        }
+
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["AutorId"] = new SelectList(_context.Autores, "Id", "Nome");
@@ -62,7 +68,6 @@ namespace Blog.Web.Controllers
 
             post.Id = Guid.NewGuid();
             post.AutorId = _user.UsuarioId().Value;
-            //post.Conteudo = post.Conteudo.Replace("color: rgb(57, 57, 57);", null, StringComparison.InvariantCultureIgnoreCase);
 
             _context.Add(post);
 
@@ -129,9 +134,9 @@ namespace Blog.Web.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             if (!(_user?.Autenticado() ?? false))
@@ -143,7 +148,29 @@ namespace Blog.Web.Controllers
                 if (post.AutorId != _user.UsuarioId().Value)
                     throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
 
-                _context.Posts.Remove(post);
+                post.Excluido = true;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Ativar(Guid id)
+        {
+            if (!(_user?.Autenticado() ?? false))
+                throw new UnauthorizedAccessException("Usuário não autenticado");
+
+            var post = await _context.Posts.FindAsync(id);
+            if (post != null)
+            {
+                if (post.AutorId != _user.UsuarioId().Value)
+                    throw new UnauthorizedAccessException("Usuário não autorizado a ativar o post pois não pertence ao mesmo.");
+
+                post.Excluido = false;
 
                 await _context.SaveChangesAsync();
             }

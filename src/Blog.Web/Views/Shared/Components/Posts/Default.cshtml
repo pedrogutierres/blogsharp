@@ -1,10 +1,22 @@
-﻿@model IEnumerable<Blog.Web.ViewModels.Posts.PostResumidoViewModel>
+﻿@using Blog.Identity.Interfaces
+@model IEnumerable<Blog.Web.ViewModels.Posts.PostResumidoViewModel>
+@inject IUser _user;
 
-<div class="d-flex justify-content-center mb-3">
-    <a asp-controller="Posts" asp-action="Create" class="btn btn-primary btn-lg" style="text-decoration: none;">
-        <i class="far fa-plus me-1"></i> Publicar novo post
-    </a>
-</div>
+@if ((_user?.Autenticado() ?? false))
+{
+    <div class="d-flex justify-content-center mb-3">
+        <a asp-controller="Posts" asp-action="Create" class="btn btn-primary btn-lg" style="text-decoration: none;">
+            <i class="far fa-plus me-1"></i> Publicar novo post
+        </a>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        Nenhum post encontrado.
+    </div>
+}
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
 
@@ -19,7 +31,7 @@
                         <small class="fw-light text-end text-muted ps-1" style="font-size: .8rem">@item.DataHoraCriacao.ToString("dd/MM HH:mm")</small>
                     </div>
                     <p class="card-text mt-3 text-muted">
-                        @if (item.ConteudoResumido.Length < 100)
+                        @if (item.ConteudoResumidoHtml.Length < 100)
                         {
                             @Html.Raw(item.ConteudoResumidoHtml)
                         }
@@ -34,7 +46,24 @@
                         <a asp-controller="Posts" asp-action="Details" asp-route-id="@item.Id" class="card-link" style="text-decoration: none;">
                             Leia mais <i class="fas fa-arrow-right fa-xs"></i>
                         </a>
-                        <small class="opacity-50" style="font-size: 0.7rem; font-weight: 500"><i>@item.AutorNomeCompleto</i></small>
+                        @if (ViewData["meus-posts"]?.ToString() == "True")
+                        {
+                            <div class="d-flex justify-content-end align-content-center">
+                                @if (item.Excluido)
+                                {
+                                    <small class="text-danger me-2">Excluído</small>
+                                }
+
+                                <a asp-controller="Posts" asp-action="Edit" asp-route-id="@item.Id" class="card-link" style="text-decoration: none;">
+                                    <i class="far fa-edit"></i>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <small class="opacity-50" style="font-size: 0.7rem; font-weight: 500"><i>@item.AutorNomeCompleto</i></small>
+                        }
+
                     </div>
                 </div>
             </div>
