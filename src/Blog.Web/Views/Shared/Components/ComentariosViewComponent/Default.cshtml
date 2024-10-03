@@ -19,7 +19,7 @@
                         <div class="d-flex justify-content-start align-items-center">
                             <i class="far fa-circle-user me-2"></i>
                             <span>@comentario.Autor.Nome @comentario.Autor.Sobrenome</span>
-                            @if ((_user?.Autenticado() ?? false) && _user.UsuarioId() == comentario.AutorId)
+                            @if ((_user?.Autenticado() ?? false) && (_user.Administrador() || _user.UsuarioId() == comentario.AutorId))
                             {
                                 <button class="btn text-primary" onclick="editarComentario('@comentario.Id')">
                                     <i class="fas fa-edit fa-xs"></i>
@@ -65,20 +65,16 @@
 
 <script>
     function editarComentario(comentarioId) {
-        // Ocultar a visualização e o conteúdo do comentário
         document.getElementById(`visualizacao-${comentarioId}`).style.display = 'none';
         document.getElementById(`conteudo-${comentarioId}`).style.display = 'none';
 
-        // Mostrar a área de edição (partial view)
         document.getElementById(`edicao-${comentarioId}`).style.display = 'block';
     }
 
     function cancelarEdicao(comentarioId) {
-        // Mostrar o conteúdo original do comentário
         document.getElementById(`visualizacao-${comentarioId}`).style.display = 'flex';
         document.getElementById(`conteudo-${comentarioId}`).style.display = 'block';
 
-        // Ocultar o formulário de edição
         document.getElementById(`edicao-${comentarioId}`).style.display = 'none';
     }
 </script>

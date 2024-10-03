@@ -10,7 +10,7 @@
     <div class="col-12 col-lg-10 mt-lg-5">
         <div class="d-flex justify-content-between">
             <h1 class="fw-bold">@Model.Titulo</h1>
-            @if ((_user?.Autenticado() ?? false) && _user.UsuarioId() == Model.AutorId)
+            @if ((_user?.Autenticado() ?? false) && (_user.Administrador() || _user.UsuarioId() == Model.AutorId))
             {
                 <a href="@Url.Action("Edit", "Posts", new { id = Model.Id })" class="p-2 text-primary d-flex justify-content-center align-items-center">
                     <i class="far fa-edit fa-lg"></i>

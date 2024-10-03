@@ -46,6 +46,7 @@
                         <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" class="card-link" style="text-decoration: none;">
                             Leia mais <i class="fas fa-arrow-right fa-xs"></i>
                         </a>
+
                         @if (ViewData["meus-posts"]?.ToString() == "True")
                         {
                             <div class="d-flex justify-content-end align-content-center">
@@ -61,7 +62,25 @@
                         }
                         else
                         {
-                            <small class="opacity-50" style="font-size: 0.7rem; font-weight: 500"><i>@post.AutorNomeCompleto</i></small>
+                            @if (_user?.Administrador() ?? false)
+                            {
+                                <div class="d-flex justify-content-end">
+                                    <small class="opacity-50 me-2" style="font-size: 0.7rem; font-weight: 500"><i>@post.AutorNomeCompleto</i></small>
+
+                                    @if (post.Excluido)
+                                    {
+                                        <small class="text-danger me-2">Excluído</small>
+                                    }
+
+                                    <a asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id" class="card-link" style="text-decoration: none;">
+                                        <i class="far fa-edit"></i>
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <small class="opacity-50" style="font-size: 0.7rem; font-weight: 500"><i>@post.AutorNomeCompleto</i></small>
+                            }
                         }
 
                     </div>

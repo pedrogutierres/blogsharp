@@ -55,7 +55,7 @@ namespace Blog.Web.Controllers
             if (comentarioOriginal == null)
                 return NotFound();
 
-            if (comentarioOriginal.AutorId != _user?.UsuarioId())
+            if (!_user.Administrador() && comentarioOriginal.AutorId != _user?.UsuarioId())
                 throw new UnauthorizedAccessException("Usuário não autorizado a editar o comentário que não é dele.");
 
             comentarioOriginal.Conteudo = comentario.Conteudo;
@@ -90,7 +90,7 @@ namespace Blog.Web.Controllers
             var comentario = await _context.Comentarios.FindAsync(id);
             if (comentario != null)
             {
-                if (comentario.AutorId != _user.UsuarioId().Value)
+                if (!_user.Administrador() && comentario.AutorId != _user.UsuarioId().Value)
                     throw new UnauthorizedAccessException("Usuário não autorizado a excluir o comentário que não é dele.");
 
                 comentario.Excluido = true;

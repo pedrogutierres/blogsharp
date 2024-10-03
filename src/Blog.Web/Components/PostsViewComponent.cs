@@ -31,7 +31,10 @@ namespace Blog.Web.Components
                 queryable = queryable.Where(p => p.AutorId == _user.UsuarioId().Value);
             }
             else
-                queryable = queryable.Where(p => !p.Excluido);
+            {
+                if (!(_user?.Autenticado() ?? false) || !_user.Administrador())
+                    queryable = queryable.Where(p => !p.Excluido);
+            }
 
             return View(await queryable.Select(p =>
                 new PostResumidoViewModel

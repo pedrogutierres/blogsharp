@@ -27,17 +27,14 @@ namespace Blog.Web.Controllers
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var post = await _context.Posts
                 .Include(p => p.Autor)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (post == null)
-            {
                 return NotFound();
-            }
 
             var tempoDeLeituraMinutos = CalcularTempoLeituraEmMinutos(post.Conteudo.Length);
             ViewData["TempoDeLeitura"] = tempoDeLeituraMinutos > 1 ? $"{tempoDeLeituraMinutos} minutos de leitura" : "1 minuto de leitura";
@@ -54,7 +51,6 @@ namespace Blog.Web.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            ViewData["AutorId"] = new SelectList(_context.Autores, "Id", "Nome");
             return View();
         }
 
@@ -80,17 +76,12 @@ namespace Blog.Web.Controllers
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var post = await _context.Posts.FindAsync(id);
             if (post == null)
-            {
                 return NotFound();
-            }
 
-            ViewData["AutorId"] = new SelectList(_context.Autores, "Id", "Nome", post.AutorId);
             return View(post);
         }
 
@@ -109,7 +100,7 @@ namespace Blog.Web.Controllers
             if (postOriginal == null)
                 return NotFound();
 
-            if (postOriginal.AutorId != _user?.UsuarioId())
+            if (!_user.Administrador() && postOriginal.AutorId != _user.UsuarioId().Value)
                 throw new UnauthorizedAccessException("Usuário não autorizado a editar o post pois não pertence ao mesmo.");
 
             postOriginal.Titulo = post.Titulo;
@@ -145,7 +136,7 @@ namespace Blog.Web.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post != null)
             {
-                if (post.AutorId != _user.UsuarioId().Value)
+                if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
                     throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
 
                 post.Excluido = true;
@@ -167,7 +158,7 @@ namespace Blog.Web.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post != null)
             {
-                if (post.AutorId != _user.UsuarioId().Value)
+                if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
                     throw new UnauthorizedAccessException("Usuário não autorizado a ativar o post pois não pertence ao mesmo.");
 
                 post.Excluido = false;
@@ -182,7 +173,6 @@ namespace Blog.Web.Controllers
         {
             return _context.Posts.Any(e => e.Id == id);
         }
-
 
         private static long CalcularTempoLeituraEmMinutos(long numeroCaracteres)
         {

@@ -29,7 +29,7 @@ namespace Blog.Identity.Models
 
         public bool Administrador()
         {
-            return _accessor.HttpContext?.User?.IsInRole("Admin") ?? false;
+            return _accessor.HttpContext?.User?.IsInRole("Administrador") ?? false;
         }
     }
 }
