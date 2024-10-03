@@ -26,7 +26,7 @@
             <input type="hidden" name="Conteudo" id="Conteudo" />
             <span asp-validation-for="Conteudo" class="text-danger"></span>
         </div>
-        <div class="form-group text-muted">
+        <div class="form-group text-muted d-flex flex-column">
             <small>Publicado em: @Model.DataHoraCriacao.ToString("dd/MM/yyyy HH:mm:ss")</small>
             @if (Model.DataHoraAlteracao.HasValue)
             {
