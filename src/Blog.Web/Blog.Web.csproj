@@ -24,4 +24,11 @@
     <ProjectReference Include="..\Blog.Identity\Blog.Identity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Posts\_ComentarioCreatePartial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -12,7 +12,7 @@
             <h1 class="fw-bold">@Model.Titulo</h1>
             @if ((_user?.Autenticado() ?? false) && _user.UsuarioId() == Model.AutorId)
             {
-                <a href="@Url.Action("Edit", "Posts", new { id = Model.Id })" class="p-2 text-primary d-flex ustify-content-center align-items-center">
+                <a href="@Url.Action("Edit", "Posts", new { id = Model.Id })" class="p-2 text-primary d-flex justify-content-center align-items-center">
                     <i class="far fa-edit fa-lg"></i>
                  </a>
             }
@@ -51,3 +51,60 @@
         <small><a href="javascript:history.back()" style="text-decoration: none">Voltar</a></small>
     </div>
 </div>
+
+<br/>
+<hr/>
+<br/>
+
+<vc:comentarios-view-component post-id="@Model.Id" />
+
+<div class="modal fade" id="excluirComentarioModal" tabindex="-1" role="dialog" aria-labelledby="excluirComentarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excluirComentarioModalLabel">Excluir Comentário</h5>
+                <button type="button" class="btn" data-dismiss="modal" aria-label="Fechar" onclick="fecharModalDeletarComentario()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Você tem certeza que deseja excluir este comentário?
+                <input type="hidden" id="comentarioIdParaDeletar" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="fecharModalDeletarComentario()">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmarDelecaoComentario">Excluir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deletarComentario(comentarioId) {
+            document.getElementById('comentarioIdParaDeletar').value = comentarioId;
+            $('#excluirComentarioModal').modal('show');
+        }
+
+        function fecharModalDeletarComentario() {
+            $('#excluirComentarioModal').modal('hide');
+        }
+
+        document.getElementById('confirmarDelecaoComentario').onclick = function () {
+            const comentarioId = document.getElementById('comentarioIdParaDeletar').value;
+
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Comentarios/Delete/' + comentarioId;
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'id';
+            input.value = comentarioId;
+            form.appendChild(input);
+            var inputToken = document.querySelector('input[name="__RequestVerificationToken"]');
+            form.appendChild(inputToken);
+            document.body.appendChild(form);
+            form.submit();
+        };
+    </script>
+}

@@ -19,7 +19,7 @@ namespace Blog.Web.Controllers
             _user = user;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -46,7 +46,7 @@ namespace Blog.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> MeusPosts()
+        public IActionResult MeusPosts()
         {
             return View();
         }

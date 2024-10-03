@@ -1,0 +1,84 @@
+﻿@using Blog.Data.Models
+@using Blog.Identity.Interfaces
+@model IEnumerable<Blog.Data.Models.Comentario>
+@inject IUser _user;
+
+@if ((_user?.Autenticado() ?? false))
+{
+    @await Html.PartialAsync("_ComentarioCreatePartial", new Comentario { PostId = ViewBag.PostId })
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+        <ul class="list-unstyled mt-4">
+            @foreach (var comentario in Model)
+            {
+                <li id="comentario-@comentario.Id" class="media mx-2 py-3 border-top border-2">
+                    <!-- Exibir o conteúdo do comentário -->
+                    <div id="visualizacao-@comentario.Id" class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <i class="far fa-circle-user me-2"></i>
+                            <span>@comentario.Autor.Nome @comentario.Autor.Sobrenome</span>
+                            @if ((_user?.Autenticado() ?? false) && _user.UsuarioId() == comentario.AutorId)
+                            {
+                                <button class="btn text-primary" onclick="editarComentario('@comentario.Id')">
+                                    <i class="fas fa-edit fa-xs"></i>
+                                </button>
+                                <button class="btn text-danger" onclick="deletarComentario('@comentario.Id')">
+                                    <i class="fas fa-trash-can fa-xs"></i>
+                                </button>
+                            }
+                        </div>
+                        <small class="text-muted">@comentario.DataHoraCriacao.ToString("dd/MM/yyyy HH:mm")</small>
+                    </div>
+
+                    <div id="conteudo-@comentario.Id" class="media-body text-muted">
+                        <span class="ms-3">@comentario.Conteudo</span>
+                    </div>
+
+                    <div id="edicao-@comentario.Id" style="display: none;">
+                        @await Html.PartialAsync("_ComentarioEditPartial", new Blog.Data.Models.Comentario { Id = comentario.Id, PostId = comentario.PostId, Conteudo = comentario.Conteudo })
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body…</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function editarComentario(comentarioId) {
+        // Ocultar a visualização e o conteúdo do comentário
+        document.getElementById(`visualizacao-${comentarioId}`).style.display = 'none';
+        document.getElementById(`conteudo-${comentarioId}`).style.display = 'none';
+
+        // Mostrar a área de edição (partial view)
+        document.getElementById(`edicao-${comentarioId}`).style.display = 'block';
+    }
+
+    function cancelarEdicao(comentarioId) {
+        // Mostrar o conteúdo original do comentário
+        document.getElementById(`visualizacao-${comentarioId}`).style.display = 'flex';
+        document.getElementById(`conteudo-${comentarioId}`).style.display = 'block';
+
+        // Ocultar o formulário de edição
+        document.getElementById(`edicao-${comentarioId}`).style.display = 'none';
+    }
+</script>

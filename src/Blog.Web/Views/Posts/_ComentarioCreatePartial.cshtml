@@ -1,0 +1,50 @@
+﻿@model Blog.Data.Models.Comentario
+
+<div class="row justify-content-center">
+    <h6 class="col-12 col-lg-10 mt-2 ms-3">Comentários</h6>
+
+    <form asp-action="Create" asp-controller="Comentarios" method="post" class="col-12 col-lg-10 d-flex">
+        <input type="hidden" asp-for="PostId" />
+        <div class="p-2 w-100">
+            <textarea asp-for="Conteudo" class="form-control" rows="2" maxlength="1000" id="inserir-comentario-conteudo"></textarea>
+            <span asp-validation-for="Conteudo" class="text-danger"></span>
+        </div>
+        <div class="p-2 flex-shrink-1">
+            <button type="submit" id="inserir-comentario" value="Create" class="btn p-2 text-primary d-flex justify-content-center align-items-center" disabled>
+                <i class="far fa-paper-plane"></i>
+            </button>
+        </div>
+    </form>
+
+    @if (TempData["ComentariosModelStateErrors"] != null && TempData["ComentariosModelStateErrors"] is string[] erros && erros.Any())
+    {
+        <div class="alert alert-danger col-12 col-lg-10 mt-2 ms-3">
+            <ul>
+                @foreach (var error in erros)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+<script>
+    const inserirComentarioConteudo = document.getElementById('inserir-comentario-conteudo');
+    const inserirComentarioSubmitButton = document.getElementById('inserir-comentario');
+
+    inserirComentarioConteudo.addEventListener('input', function () {
+        if (inserirComentarioConteudo.value.trim().length > 0) {
+            inserirComentarioSubmitButton.disabled = false;
+        } else {
+            inserirComentarioSubmitButton.disabled = true;
+        }
+    });
+
+        inserirComentarioConteudo.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+                inserirComentarioSubmitButton.click();
+        }
+    });
+</script>

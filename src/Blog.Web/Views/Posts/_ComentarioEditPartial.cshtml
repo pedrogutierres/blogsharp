@@ -1,0 +1,51 @@
+﻿@model Blog.Data.Models.Comentario
+
+<div class="row justify-content-center">
+    <form asp-action="Edit" asp-controller="Comentarios" asp-route-id="@Model.Id" method="post" class="col-12 d-flex">
+        <div class="p-2 w-100">
+            <textarea asp-for="Conteudo" class="form-control" rows="2" maxlength="1000" id="editar-comentario-conteudo-@Model.Id"></textarea>
+            <span asp-validation-for="Conteudo" class="text-danger"></span>
+        </div>
+        <div class="p-2 flex-shrink-1">
+            <div class="d-flex flex-column">
+                <button type="submit" id="editar-comentario-@Model.Id" value="Create" class="btn p-2 text-primary d-flex justify-content-center align-items-center">
+                    <i class="far fa-paper-plane"></i>
+                </button>
+                <button type="button" class="btn p-2 text-danger d-flex justify-content-center align-items-center" onclick="cancelarEdicao('@Model.Id')">
+                    <i class="fas fa-ban"></i>
+                </button>
+                
+            </div>
+           
+        </div>
+    </form>
+
+    @if (TempData["ComentariosModelStateErrors"] != null && TempData["ComentariosModelStateErrors"] is string[] erros && erros.Any())
+    {
+        <div class="alert alert-danger col-12 col-lg-10 mt-2 ms-3">
+            <ul>
+                @foreach (var error in erros)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+<script>
+    document.getElementById('editar-comentario-conteudo-@Model.Id').addEventListener('input', function () {
+        if (document.getElementById('editar-comentario-conteudo-@Model.Id').value.trim().length > 0) {
+            document.getElementById('editar-comentario-@Model.Id').disabled = false;
+        } else {
+            document.getElementById('editar-comentario-@Model.Id').disabled = true;
+        }
+    });
+
+    document.getElementById('editar-comentario-conteudo-@Model.Id').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            document.getElementById('editar-comentario-@Model.Id').click();
+        }
+    });
+</script>

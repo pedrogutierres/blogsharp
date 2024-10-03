@@ -20,48 +20,48 @@
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
 
-    @foreach (var item in Model)
+    @foreach (var post in Model)
     {
         <div class="col">
             <div class="card h-100">
                 <img src="~/images/logo.webp" class="card-img-top m-0" style="max-height: 200px">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-top">
-                        <h4 class="card-title fw-bold">@Html.DisplayFor(modelItem => item.Titulo)</h4>
-                        <small class="fw-light text-end text-muted ps-1" style="font-size: .8rem">@item.DataHoraCriacao.ToString("dd/MM HH:mm")</small>
+                        <h4 class="card-title fw-bold">@Html.DisplayFor(modelItem => post.Titulo)</h4>
+                        <small class="fw-light text-end text-muted ps-1" style="font-size: .8rem">@post.DataHoraCriacao.ToString("dd/MM HH:mm")</small>
                     </div>
                     <p class="card-text mt-3 text-muted">
-                        @if (item.ConteudoResumidoHtml.Length < 100)
+                        @if (post.ConteudoResumidoHtml.Length < 100)
                         {
-                            @Html.Raw(item.ConteudoResumidoHtml)
+                            @Html.Raw(post.ConteudoResumidoHtml)
                         }
                         else
                         {
-                            <span>@Html.Raw(item.ConteudoResumidoHtml)...</span>
+                            <span>@Html.Raw(post.ConteudoResumidoHtml)...</span>
                         }
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
                     <div class="d-flex justify-content-between align-items-baseline">
-                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@item.Id" class="card-link" style="text-decoration: none;">
+                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" class="card-link" style="text-decoration: none;">
                             Leia mais <i class="fas fa-arrow-right fa-xs"></i>
                         </a>
                         @if (ViewData["meus-posts"]?.ToString() == "True")
                         {
                             <div class="d-flex justify-content-end align-content-center">
-                                @if (item.Excluido)
+                                @if (post.Excluido)
                                 {
                                     <small class="text-danger me-2">Excluído</small>
                                 }
 
-                                <a asp-controller="Posts" asp-action="Edit" asp-route-id="@item.Id" class="card-link" style="text-decoration: none;">
+                                <a asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id" class="card-link" style="text-decoration: none;">
                                     <i class="far fa-edit"></i>
                                 </a>
                             </div>
                         }
                         else
                         {
-                            <small class="opacity-50" style="font-size: 0.7rem; font-weight: 500"><i>@item.AutorNomeCompleto</i></small>
+                            <small class="opacity-50" style="font-size: 0.7rem; font-weight: 500"><i>@post.AutorNomeCompleto</i></small>
                         }
 
                     </div>
