@@ -1,4 +1,6 @@
 ﻿@model Blog.Data.Models.Post
+@using Blog.Identity.Interfaces
+@inject IUser _user;
 
 @{
     ViewData["Title"] = Model.Titulo;
@@ -6,7 +8,16 @@
 
 <div class="row justify-content-center mt-4">
     <div class="col-12 col-lg-10 mt-lg-5">
-        <h1 class="fw-bold">@Model.Titulo</h1>
+        <div class="d-flex justify-content-between">
+            <h1 class="fw-bold">@Model.Titulo</h1>
+            @if ((_user?.Autenticado() ?? false) && _user.UsuarioId() == Model.AutorId)
+            {
+                <a href="@Url.Action("Edit", "Posts", new { id = Model.Id })" class="p-2 text-primary d-flex ustify-content-center align-items-center">
+                    <i class="far fa-edit fa-lg"></i>
+                 </a>
+            }
+        </div>
+        
 
         <div class="d-flex justify-content-between mt-4">
             <div class="d-flex justify-content-start align-items-center">

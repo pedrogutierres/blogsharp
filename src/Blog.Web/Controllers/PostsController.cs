@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Blog.Data;
+using Blog.Data.Models;
+using Blog.Identity.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Blog.Data;
-using Blog.Data.Models;
-using Blog.Web.Components;
-using Blog.Identity.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Web.Controllers
 {
@@ -50,6 +45,7 @@ namespace Blog.Web.Controllers
             return View(post);
         }
 
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["AutorId"] = new SelectList(_context.Autores, "Id", "Nome");
@@ -66,15 +62,16 @@ namespace Blog.Web.Controllers
 
             post.Id = Guid.NewGuid();
             post.AutorId = _user.UsuarioId().Value;
-            
+            //post.Conteudo = post.Conteudo.Replace("color: rgb(57, 57, 57);", null, StringComparison.InvariantCultureIgnoreCase);
+
             _context.Add(post);
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = post.Id });
         }
 
-        // GET: Posts/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -87,77 +84,70 @@ namespace Blog.Web.Controllers
             {
                 return NotFound();
             }
+
             ViewData["AutorId"] = new SelectList(_context.Autores, "Id", "Nome", post.AutorId);
             return View(post);
         }
 
-        // POST: Posts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Titulo,Conteudo,Excluido,DataHoraCriacao,DataHoraAlteracao,AutorId")] Post post)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Titulo,Conteudo")] Post post)
         {
             if (id != post.Id)
-            {
                 return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(post);
+
+            var postOriginal = await _context.Posts.FindAsync(id);
+            if (postOriginal == null)
+                return NotFound();
+
+            if (postOriginal.AutorId != _user?.UsuarioId())
+                throw new UnauthorizedAccessException("Usuário não autorizado a editar o post pois não pertence ao mesmo.");
+
+            postOriginal.Titulo = post.Titulo;
+            postOriginal.Conteudo = post.Conteudo;
+
+            try
             {
-                try
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PostExists(post.Id))
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!PostExists(post.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AutorId"] = new SelectList(_context.Autores, "Id", "Nome", post.AutorId);
-            return View(post);
-        }
-
-        // GET: Posts/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Autor)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return View(post);
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
+            if (!(_user?.Autenticado() ?? false))
+                throw new UnauthorizedAccessException("Usuário não autenticado");
+
             var post = await _context.Posts.FindAsync(id);
             if (post != null)
             {
+                if (post.AutorId != _user.UsuarioId().Value)
+                    throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
+
                 _context.Posts.Remove(post);
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
