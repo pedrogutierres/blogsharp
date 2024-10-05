@@ -1,4 +1,5 @@
 using Blog.Data;
+using Blog.Data.Helpers;
 using Blog.Identity.Extensions;
 using Blog.Identity.Interfaces;
 using Blog.Identity.Models;
@@ -62,5 +63,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.UseDbMigrationHelper();
 
 app.Run();

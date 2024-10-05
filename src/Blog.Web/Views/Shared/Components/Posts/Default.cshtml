@@ -5,7 +5,7 @@
 @if ((_user?.Autenticado() ?? false))
 {
     <div class="d-flex justify-content-center mb-3">
-        <a asp-controller="Posts" asp-action="Create" class="btn btn-primary btn-lg" style="text-decoration: none;">
+        <a asp-controller="Posts" asp-action="Create" class="btn btn-outline-primary btn-lg" style="text-decoration: none;">
             <i class="far fa-plus me-1"></i> Publicar novo post
         </a>
     </div>
@@ -27,7 +27,10 @@
                 <img src="~/images/logo.webp" class="card-img-top m-0" style="max-height: 200px">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-top">
-                        <h4 class="card-title fw-bold">@Html.DisplayFor(modelItem => post.Titulo)</h4>
+                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" style="text-decoration: none; color: #000;">
+                            <h4 class="card-title fw-bold">@Html.DisplayFor(modelItem => post.Titulo)</h4>
+                        </a>
+                        
                         <small class="fw-light text-end text-muted ps-1" style="font-size: .8rem">@post.DataHoraCriacao.ToString("dd/MM HH:mm")</small>
                     </div>
                     <p class="card-text mt-3 text-muted">
