@@ -1,3 +1,4 @@
+using Blog.Business.Services;
 using Blog.Data;
 using Blog.Data.Helpers;
 using Blog.Identity.Extensions;
@@ -25,6 +26,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IUser, AspNetUser>();
+builder.Services.AddScoped<PostService>();
 
 var app = builder.Build();
 

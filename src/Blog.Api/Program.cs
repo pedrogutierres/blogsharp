@@ -1,4 +1,5 @@
 using Blog.Api.Configurations;
+using Blog.Business.Services;
 using Blog.Identity.Interfaces;
 using Blog.Identity.Models;
 
@@ -15,6 +16,7 @@ builder.AddApiSecurity();
 builder.AddSwaggerConfig();
 
 builder.Services.AddScoped<IUser, AspNetUser>();
+builder.Services.AddScoped<PostService>();
 
 var app = builder.Build();
 

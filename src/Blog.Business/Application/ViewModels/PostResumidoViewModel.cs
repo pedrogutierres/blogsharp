@@ -1,6 +1,6 @@
-﻿using Blog.Api.Helpers;
+﻿using Blog.Business.Helpers;
 
-namespace Blog.Api.ViewModels.Posts
+namespace Blog.Business.ViewModels.Posts
 {
     public class PostResumidoViewModel
     {

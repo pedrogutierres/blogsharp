@@ -20,8 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Blog.Data\Blog.Data.csproj" />
-    <ProjectReference Include="..\Blog.Identity\Blog.Identity.csproj" />
+    <ProjectReference Include="..\Blog.Business\Blog.Business.csproj" />
   </ItemGroup>
 
   <ItemGroup>
