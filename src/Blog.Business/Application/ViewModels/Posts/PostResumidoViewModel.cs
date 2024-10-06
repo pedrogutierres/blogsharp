@@ -1,14 +1,14 @@
-﻿using Blog.Web.Helpers;
+﻿using Blog.Business.Helpers;
 
-namespace Blog.Web.ViewModels.Posts
+namespace Blog.Business.Application.ViewModels.Posts
 {
     public class PostResumidoViewModel
     {
         public Guid Id { get; set; }
         public string Titulo { get; set; }
         public string Conteudo { get; set; }
-        public string ConteudoHtml => CustomHtmlHelpers.RemoverTagsHtml(Conteudo);
-        public string ConteudoResumidoHtml => ConteudoHtml.Length > 100 ? ConteudoHtml[0..100] : ConteudoHtml;
+        public string ConteudoNormalizado => CustomHtmlHelpers.RemoverTagsHtml(Conteudo);
+        public string ConteudoResumidoNormalizado => ConteudoNormalizado.Length > 100 ? ConteudoNormalizado[0..100] : ConteudoNormalizado;
         public bool Excluido { get; set; }
         public DateTime DataHoraCriacao { get; set; }
         public Guid AutorId { get; set; }

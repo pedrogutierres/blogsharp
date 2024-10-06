@@ -1,5 +1,5 @@
 ﻿@using Blog.Identity.Interfaces
-@model IEnumerable<Blog.Web.ViewModels.Posts.PostResumidoViewModel>
+@model IEnumerable<Blog.Business.Application.ViewModels.Posts.PostResumidoViewModel>
 @inject IUser _user;
 
 @if ((_user?.Autenticado() ?? false))
@@ -34,13 +34,13 @@
                         <small class="fw-light text-end text-muted ps-1" style="font-size: .8rem">@post.DataHoraCriacao.ToString("dd/MM HH:mm")</small>
                     </div>
                     <p class="card-text mt-3 text-muted">
-                        @if (post.ConteudoResumidoHtml.Length < 100)
+                        @if (post.ConteudoResumidoNormalizado.Length < 100)
                         {
-                            @Html.Raw(post.ConteudoResumidoHtml)
+                            @Html.Raw(post.ConteudoResumidoNormalizado)
                         }
                         else
                         {
-                            <span>@Html.Raw(post.ConteudoResumidoHtml)...</span>
+                            <span>@Html.Raw(post.ConteudoResumidoNormalizado)...</span>
                         }
                     </p>
                 </div>

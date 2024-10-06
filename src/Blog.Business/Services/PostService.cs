@@ -1,4 +1,4 @@
-﻿using Blog.Business.ViewModels.Posts;
+﻿using Blog.Business.Application.ViewModels.Posts;
 using Blog.Data;
 using Blog.Identity.Interfaces;
 using Microsoft.EntityFrameworkCore;

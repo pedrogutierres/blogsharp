@@ -28,8 +28,8 @@ var defaultCulture = new CultureInfo("pt-BR");
 var localizationOptions = new RequestLocalizationOptions
 {
     DefaultRequestCulture = new RequestCulture(defaultCulture),
-    SupportedCultures = new[] { defaultCulture },
-    SupportedUICultures = new[] { defaultCulture }
+    SupportedCultures = [defaultCulture],
+    SupportedUICultures = [defaultCulture]
 };
 
 app.UseRequestLocalization(localizationOptions);
