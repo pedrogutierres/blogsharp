@@ -35,12 +35,18 @@ namespace Blog.Business.Services
             _logger = logger;
         }
 
+
+        public async Task<bool> ValidarLoginUsuarioAsync(string email, string senha)
+        {
+            var result = await _signInManager.PasswordSignInAsync(email, senha, false, lockoutOnFailure: false);
+            return result.Succeeded;
+        }
         public async Task<IdentityUser> RegistrarUsuarioAsync(string email, string senha, string nome, string sobrenome)
         {
             var user = CreateUser();
 
             await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, senha, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
             await _emailStore.SetEmailConfirmedAsync(user, true, CancellationToken.None);
 
             try
@@ -112,8 +118,6 @@ namespace Blog.Business.Services
             {
                 throw;
             }
-
-            return null;
         }
 
         private IdentityUser CreateUser()
