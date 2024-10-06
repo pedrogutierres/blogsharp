@@ -4,7 +4,6 @@
 
 using Blog.Data;
 using Blog.Identity.Models;
-using Blog.Web.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -89,7 +88,7 @@ namespace Blog.Web.Areas.Identity.Pages.Account
 
                     var autor = await _context.Autores.FindAsync(Guid.Parse(HttpContext.User.GetUserId()));
                     var user = await _userManager.FindByEmailAsync(Input.Email);
-                    var customClaims = await _userManager.GetCustomClaimsAsync(user, autor);
+                    var customClaims = await _userManager.GetCustomClaimsAsync(user, autor.Nome, autor.Sobrenome);
                     await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, customClaims);
                     
                     _logger.LogInformation("Claims customizadas atualizadas.");

@@ -1,4 +1,5 @@
-﻿using Blog.Data;
+﻿using Blog.Business.Services;
+using Blog.Data;
 using Blog.Data.Models;
 using Blog.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +13,13 @@ namespace Blog.Web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IUser _user;
+        private readonly PostService _postService;
 
-        public PostsController(ApplicationDbContext context, IUser user)
+        public PostsController(ApplicationDbContext context, IUser user, PostService postService)
         {
             _context = context;
             _user = user;
+            _postService = postService;
         }
 
         public IActionResult Index()
@@ -63,11 +66,8 @@ namespace Blog.Web.Controllers
                 return View(post);
 
             post.Id = Guid.NewGuid();
-            post.AutorId = _user.UsuarioId().Value;
 
-            _context.Add(post);
-
-            await _context.SaveChangesAsync();
+            await _postService.PublicarPostAsync(post);
 
             return RedirectToAction(nameof(Details), new { id = post.Id });
         }

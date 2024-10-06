@@ -19,6 +19,8 @@ builder.AddApiSecurity();
 
 builder.AddSwaggerConfig();
 
+builder.AddAutoMapperSetup();
+
 builder.Services.AddScoped<IUser, AspNetUser>();
 builder.Services.AddScoped<PostService>();
 

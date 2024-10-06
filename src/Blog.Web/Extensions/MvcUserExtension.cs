@@ -1,6 +1,4 @@
-﻿using Blog.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace Blog.Web.Extensions
 {
@@ -22,22 +20,6 @@ namespace Blog.Web.Extensions
             var firstName = user.FirstName();
             if (!string.IsNullOrEmpty(firstName)) return firstName;
             return user.Identity?.Name;
-        }
-
-        public static async Task<IList<Claim>> GetCustomClaimsAsync(this UserManager<IdentityUser> userManager, IdentityUser user, Autor autor)
-        {
-            var additionalClaims = new List<Claim>
-            {
-                new("FullName", $"{autor.Nome.Trim()} {autor.Sobrenome.Trim()}"),
-                new("FirstName", autor.Nome),
-                new("LastName", autor.Sobrenome),
-                new("Email", user.Email),
-                new("UserId", user.Id)
-            };
-
-            var claims = new List<Claim>(await userManager.GetClaimsAsync(user));
-            claims.AddRange(additionalClaims);
-            return claims;
         }
     }
 }

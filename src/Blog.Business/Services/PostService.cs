@@ -1,5 +1,6 @@
 ﻿using Blog.Business.Application.ViewModels.Posts;
 using Blog.Data;
+using Blog.Data.Models;
 using Blog.Identity.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +46,17 @@ namespace Blog.Business.Services
                     AutorNomeCompleto = $"{p.Autor.Nome} {p.Autor.Sobrenome}"
                 }
             ).ToListAsync();
+        }
+
+        public Task<Post> ObterPostPorIdAsync(Guid id) => _context.Posts.Include(p => p.Autor).FirstOrDefaultAsync(m => m.Id == id);
+
+        public async Task<bool> PublicarPostAsync(Post post)
+        {
+            post.AutorId = _user.UsuarioId().Value;
+
+            _context.Add(post);
+
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

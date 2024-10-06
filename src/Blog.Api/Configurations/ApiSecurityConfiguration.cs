@@ -1,4 +1,5 @@
-﻿using Blog.Data;
+﻿using Blog.Api.Authentication;
+using Blog.Data;
 using Blog.Identity.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -42,15 +43,9 @@ namespace Blog.Api.Configurations
                 };
             });
 
+            builder.Services.AddScoped<JwtTokenGenerate>();
+
             return builder;
         }
-    }
-
-    public class JwtSettings
-    {
-        public string Segredo { get; set; }
-        public int ExpiracaoHoras { get; set; }
-        public string Emissor { get; set; }
-        public string Audiencia { get; set; }
     }
 }

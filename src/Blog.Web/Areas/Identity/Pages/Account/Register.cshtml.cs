@@ -141,7 +141,7 @@ namespace Blog.Web.Areas.Identity.Pages.Account
 
                         _logger.LogInformation("Usuário criado com senha.");
 
-                        var customClaims = await _userManager.GetCustomClaimsAsync(user, autor);
+                        var customClaims = await _userManager.GetCustomClaimsAsync(user, autor.Nome, autor.Sobrenome);
 
                         await _signInManager.SignInWithClaimsAsync(user, false, customClaims);
 

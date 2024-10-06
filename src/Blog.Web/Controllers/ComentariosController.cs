@@ -94,6 +94,7 @@ namespace Blog.Web.Controllers
                     throw new UnauthorizedAccessException("Usuário não autorizado a excluir o comentário que não é dele.");
 
                 comentario.Excluido = true;
+                comentario.DataHoraExclusao = DateTime.Now;
 
                 await _context.SaveChangesAsync();
             }
