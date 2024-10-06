@@ -1,22 +1,22 @@
-﻿using Blog.Data;
+﻿using Blog.Business.Services;
+using Blog.Data;
 using Blog.Data.Models;
 using Blog.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace Blog.Web.Controllers
 {
     public class ComentariosController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IUser _user;
+        private readonly ComentariosService _comentariosService;
 
-        public ComentariosController(ApplicationDbContext context, IUser user)
+        public ComentariosController(ComentariosService comentariosService)
         {
-            _context = context;
-            _user = user;
+            _comentariosService = comentariosService;
         }
 
         [HttpPost]
@@ -31,11 +31,8 @@ namespace Blog.Web.Controllers
             }
 
             comentario.Id = Guid.NewGuid();
-            comentario.AutorId = _user.UsuarioId().Value;
 
-            _context.Add(comentario);
-
-            await _context.SaveChangesAsync();
+            await _comentariosService.PublicarComentarioAsync(comentario);
 
             return RedirectToAction(nameof(Details), "Posts", new { id = comentario.PostId });
         }
@@ -51,32 +48,11 @@ namespace Blog.Web.Controllers
             if (!ModelState.IsValid)
                 return View(comentario);
 
-            var comentarioOriginal = await _context.Comentarios.FindAsync(id);
-            if (comentarioOriginal == null)
+            var comentarioAlterado = await _comentariosService.EditarComentarioAsync(comentario);
+            if (comentarioAlterado == null)
                 return NotFound();
 
-            if (!_user.Administrador() && comentarioOriginal.AutorId != _user?.UsuarioId())
-                throw new UnauthorizedAccessException("Usuário não autorizado a editar o comentário que não é dele.");
-
-            comentarioOriginal.Conteudo = comentario.Conteudo;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ComentarioExists(comentario.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToAction(nameof(Details), "Posts", new { id = comentarioOriginal.PostId });
+            return RedirectToAction(nameof(Details), "Posts", new { id = comentarioAlterado.PostId });
         }
 
         [HttpPost, ActionName("Delete")]
@@ -84,27 +60,11 @@ namespace Blog.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            if (!(_user?.Autenticado() ?? false))
-                throw new UnauthorizedAccessException("Usuário não autenticado");
-
-            var comentario = await _context.Comentarios.FindAsync(id);
-            if (comentario != null)
-            {
-                if (!_user.Administrador() && comentario.AutorId != _user.UsuarioId().Value)
-                    throw new UnauthorizedAccessException("Usuário não autorizado a excluir o comentário que não é dele.");
-
-                comentario.Excluido = true;
-                comentario.DataHoraExclusao = DateTime.Now;
-
-                await _context.SaveChangesAsync();
-            }
+            var comentario = await _comentariosService.DeletarComentarioAsync(id);
+            if (comentario == null)
+                return NotFound();
 
             return RedirectToAction(nameof(Details), "Posts", new { id = comentario.PostId });
-        }
-
-        private bool ComentarioExists(Guid id)
-        {
-            return _context.Comentarios.Any(e => e.Id == id);
         }
     }
 }

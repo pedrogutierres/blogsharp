@@ -9,6 +9,13 @@
         public DateTime DataHoraCriacao { get; set; }
         public DateTime? DataHoraAlteracao { get; set; }
         public Guid PostId { get; set; }
-        public Guid AutorId { get; set; }
+        public ComentarioAutorViewModel Autor { get; set; }
+    }
+
+    public class ComentarioAutorViewModel
+    {
+        public Guid Id { get; set; }
+        public string Nome { get; set; }
+        public string Sobrenome { get; set; }
     }
 }

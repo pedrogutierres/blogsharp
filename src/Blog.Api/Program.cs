@@ -24,6 +24,7 @@ builder.AddAutoMapperSetup();
 builder.Services.AddScoped<IUser, AspNetUser>();
 builder.Services.AddScoped<AutenticacaoService>();
 builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<ComentariosService>();
 
 var app = builder.Build();
 

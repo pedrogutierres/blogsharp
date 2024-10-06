@@ -36,13 +36,17 @@ namespace Blog.Api.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(PostViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PostViewModel>> ObterDetalhesDoPost([FromRoute] Guid id)
+        public async Task<ActionResult<PostViewModel>> ObterDetalhesDoPost([FromRoute] Guid id, [FromServices] ComentariosService comentariosService)
         {
             var post = await _postService.ObterPostPorIdAsync(id);
             if (post == null)
                 return NotFound();
 
-            return _mapper.Map<Post, PostViewModel>(post);
+            var postMapper = _mapper.Map<Post, PostViewModel>(post);
+
+            postMapper.Comentarios = _mapper.Map<IEnumerable<Comentario>, IEnumerable<PostComentarioViewModel>>(await comentariosService.ObterComentariosAsync(id));
+
+            return postMapper;
         }
 
         [HttpPost]

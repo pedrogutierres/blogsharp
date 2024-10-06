@@ -8,7 +8,6 @@
         public bool Excluido { get; set; }
         public DateTime DataHoraCriacao { get; set; }
         public DateTime? DataHoraAlteracao { get; set; }
-        public Guid AutorId { get; set; }
         public PostAutorViewModel Autor { get; set; }
         public IEnumerable<PostComentarioViewModel> Comentarios { get; set; }
     }

@@ -25,6 +25,7 @@ namespace Blog.Api.Configurations
             CreateMap<Comentario, PostComentarioViewModel>();
             CreateMap<Autor, AutorViewModel>();
             CreateMap<Comentario, ComentarioViewModel>();
+            CreateMap<Autor, ComentarioAutorViewModel>();
         }
     }
 
@@ -34,6 +35,9 @@ namespace Blog.Api.Configurations
         {
             CreateMap<PublicarPostViewModel, Post>();
             CreateMap<EditarPostViewModel, Post>();
+
+            CreateMap<PublicarComentarioViewModel, Comentario>();
+            CreateMap<EditarComentarioViewModel, Comentario>();
         }
     }
 }
