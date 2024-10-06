@@ -26,6 +26,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IUser, AspNetUser>();
+builder.Services.AddScoped<AutenticacaoService>();
 builder.Services.AddScoped<PostService>();
 
 var app = builder.Build();

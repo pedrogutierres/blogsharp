@@ -2,49 +2,35 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using Blog.Data;
-using Blog.Data.Models;
+using Blog.Business.Exceptions;
+using Blog.Business.Services;
 using Blog.Identity.Models;
-using Blog.Web.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
 
 namespace Blog.Web.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+        private readonly AutenticacaoService _autenticacaoService;
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly ApplicationDbContext _context;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            ApplicationDbContext context,
-            RoleManager<IdentityRole> roleManager,
+            AutenticacaoService autenticacaoService,
             UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterModel> logger)
         {
-            _context = context;
-            _roleManager = roleManager;
+            _autenticacaoService = autenticacaoService;
             _userManager = userManager;
-            _userStore = userStore;
-            _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
         }
 
         [BindProperty]
@@ -94,54 +80,12 @@ namespace Blog.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailConfirmedAsync(user, true, CancellationToken.None);
-
                 try
                 {
-                    var existeUsuarioCadastrado = await _userManager.Users.AnyAsync();
-
-                    var result = await _userManager.CreateAsync(user, Input.Password);
-
-                    if (result.Succeeded)
+                    var user = await _autenticacaoService.RegistrarUsuarioAsync(Input.Email, Input.Password, Input.FirstName, Input.LastName);
+                    if (user != null)
                     {
-                        if (!existeUsuarioCadastrado)
-                        {
-                            if (!await _roleManager.RoleExistsAsync("Administrador"))
-                            {
-                                var role = new IdentityRole();
-                                role.Name = "Administrador";
-                                await _roleManager.CreateAsync(role);
-                            }
-
-                            await _userManager.AddToRoleAsync(user, "Administrador");
-                        }
-
-                        if (!await _roleManager.RoleExistsAsync("Autor"))
-                        {
-                            var role = new IdentityRole();
-                            role.Name = "Autor";
-                            await _roleManager.CreateAsync(role);
-                        }
-
-                        await _userManager.AddToRoleAsync(user, "Autor");
-
-                        var autor = new Autor
-                        {
-                            Id = Guid.Parse(user.Id),
-                            Nome = Input.FirstName?.Trim(),
-                            Sobrenome = Input.LastName?.Trim()
-                        };
-
-                        _context.Autores.Add(autor);
-                        await _context.SaveChangesAsync();
-
-                        _logger.LogInformation("Usuário criado com senha.");
-
-                        var customClaims = await _userManager.GetCustomClaimsAsync(user, autor.Nome, autor.Sobrenome);
+                        var customClaims = await _userManager.GetCustomClaimsAsync(user, Input.FirstName, Input.LastName);
 
                         await _signInManager.SignInWithClaimsAsync(user, false, customClaims);
 
@@ -149,29 +93,11 @@ namespace Blog.Web.Areas.Identity.Pages.Account
 
                         return LocalRedirect(returnUrl);
                     }
-
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
                 }
-                catch (DbException)
+                catch (BusinessException ex)
                 {
-                    // caso houver erro na criacao de usuario e autor, excluir o usuario criado caso tenha sido
-                    try
-                    {
-                        await _userManager.DeleteAsync(user);
-
-                        var autor = await _context.Autores.FindAsync(Guid.Parse(user.Id));
-                        if (autor != null)
-                        {
-                            _context.Autores.Remove(autor);
-                            await _context.SaveChangesAsync();
-                        }
-                    }
-                    catch { }
-
-                    throw;
+                    foreach (var error in ex.Data.Values)
+                        ModelState.AddModelError(string.Empty, error.ToString());
                 }
                 catch
                 {
@@ -180,29 +106,6 @@ namespace Blog.Web.Areas.Identity.Pages.Account
             }
 
             return Page();
-        }
-
-        private IdentityUser CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<IdentityUser>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
-        }
-
-        private IUserEmailStore<IdentityUser> GetEmailStore()
-        {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-            return (IUserEmailStore<IdentityUser>)_userStore;
         }
     }
 }
