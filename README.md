@@ -42,6 +42,8 @@ A estrutura do projeto é organizada da seguinte forma:
   - Blog.Web/ - Projeto MVC
   - Blog.Api/ - API RESTful
   - Blog.Data/ - Modelos de Dados e Configuração do EF Core
+  - Blog.Identity/ - Padronização da Autenticação
+  - Blog.Business/ - Camada de Negócio e Serviços
 - README.md - Arquivo de Documentação do Projeto
 - FEEDBACK.md - Arquivo para Consolidação dos Feedbacks
 - .gitignore - Arquivo de Ignoração do Git
@@ -75,12 +77,12 @@ A estrutura do projeto é organizada da seguinte forma:
 3. **Executar a Aplicação MVC:**
    - `cd src/Blog.Web/`
    - `dotnet run`
-   - Acesse a aplicação em: http://localhost:5000
+   - Acesse a aplicação em: http://localhost:5000 ou https://localhost:5002
 
 4. **Executar a API:**
    - `cd src/Blog.Api/`
    - `dotnet run`
-   - Acesse a documentação da API em: http://localhost:5001/swagger
+   - Acesse a documentação da API em: http://localhost:5001/swagger ou https://localhost:5003/swagger
 
 ## **7. Instruções de Configuração**
 
