@@ -2,10 +2,8 @@
 
 namespace Blog.Api.ViewModels.Posts
 {
-    public class PublicarPostViewModel
+    public class EditarPostViewModel
     {
-        public Guid Id { get; } = Guid.NewGuid();
-
         [Required(ErrorMessage = "O título do post deve ser informado.")]
         [StringLength(200, ErrorMessage = "O título do post deve conter no máximo {1} caracteres")]
         public string Titulo { get; set; }

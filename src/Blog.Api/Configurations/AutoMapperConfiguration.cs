@@ -33,6 +33,7 @@ namespace Blog.Api.Configurations
         public ViewModelToDomainMappingProfile()
         {
             CreateMap<PublicarPostViewModel, Post>();
+            CreateMap<EditarPostViewModel, Post>();
         }
     }
 }

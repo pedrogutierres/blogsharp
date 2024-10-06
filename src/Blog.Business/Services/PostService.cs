@@ -58,5 +58,66 @@ namespace Blog.Business.Services
 
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<Post> EditarPostAsync(Post post)
+        {
+            var postOriginal = await _context.Posts.FindAsync(post.Id);
+            if (postOriginal == null)
+                return null;
+
+            if (!_user.Administrador() && postOriginal.AutorId != _user.UsuarioId().Value)
+                throw new UnauthorizedAccessException("Usuário não autorizado a editar o post pois não pertence ao mesmo.");
+
+            postOriginal.Titulo = post.Titulo;
+            postOriginal.Conteudo = post.Conteudo;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (await PostExists(post.Id))
+                    throw;
+
+                return null;
+            }
+
+            return postOriginal;
+        }
+
+        public async Task<bool> DeletarPostAsync(Guid id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+                return false;
+
+            if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
+                throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
+
+            post.Excluido = true;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> AtivarPostAsync(Guid id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+                return false;
+
+            if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
+                throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
+
+            post.Excluido = false;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        private async Task<bool> PostExists(Guid id) => await _context.Posts.AnyAsync(e => e.Id == id);
     }
 }

@@ -1,6 +1,4 @@
-﻿using Blog.Api.ViewModels.Comentarios;
-
-namespace Blog.Api.ViewModels.Posts
+﻿namespace Blog.Api.ViewModels.Posts
 {
     public class PostViewModel
     {

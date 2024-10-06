@@ -1,24 +1,16 @@
 ﻿using Blog.Business.Services;
-using Blog.Data;
 using Blog.Data.Models;
-using Blog.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Web.Controllers
 {
     public class PostsController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IUser _user;
         private readonly PostService _postService;
 
-        public PostsController(ApplicationDbContext context, IUser user, PostService postService)
+        public PostsController(PostService postService)
         {
-            _context = context;
-            _user = user;
             _postService = postService;
         }
 
@@ -32,10 +24,7 @@ namespace Blog.Web.Controllers
             if (id == null)
                 return NotFound();
 
-            var post = await _context.Posts
-                .Include(p => p.Autor)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var post = await _postService.ObterPostPorIdAsync(id.Value);
             if (post == null)
                 return NotFound();
 
@@ -78,7 +67,7 @@ namespace Blog.Web.Controllers
             if (id == null)
                 return NotFound();
 
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _postService.ObterPostPorIdAsync(id.Value);
             if (post == null)
                 return NotFound();
 
@@ -96,31 +85,9 @@ namespace Blog.Web.Controllers
             if (!ModelState.IsValid)
                 return View(post);
 
-            var postOriginal = await _context.Posts.FindAsync(id);
-            if (postOriginal == null)
+            var postAlterado = await _postService.EditarPostAsync(post);
+            if (postAlterado == null)
                 return NotFound();
-
-            if (!_user.Administrador() && postOriginal.AutorId != _user.UsuarioId().Value)
-                throw new UnauthorizedAccessException("Usuário não autorizado a editar o post pois não pertence ao mesmo.");
-
-            postOriginal.Titulo = post.Titulo;
-            postOriginal.Conteudo = post.Conteudo;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PostExists(post.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -130,19 +97,7 @@ namespace Blog.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            if (!(_user?.Autenticado() ?? false))
-                throw new UnauthorizedAccessException("Usuário não autenticado");
-
-            var post = await _context.Posts.FindAsync(id);
-            if (post != null)
-            {
-                if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
-                    throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
-
-                post.Excluido = true;
-
-                await _context.SaveChangesAsync();
-            }
+            await _postService.DeletarPostAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
@@ -152,26 +107,9 @@ namespace Blog.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(Guid id)
         {
-            if (!(_user?.Autenticado() ?? false))
-                throw new UnauthorizedAccessException("Usuário não autenticado");
-
-            var post = await _context.Posts.FindAsync(id);
-            if (post != null)
-            {
-                if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
-                    throw new UnauthorizedAccessException("Usuário não autorizado a ativar o post pois não pertence ao mesmo.");
-
-                post.Excluido = false;
-
-                await _context.SaveChangesAsync();
-            }
+            await _postService.AtivarPostAsync(id);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PostExists(Guid id)
-        {
-            return _context.Posts.Any(e => e.Id == id);
         }
 
         private static long CalcularTempoLeituraEmMinutos(long numeroCaracteres)

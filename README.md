@@ -100,3 +100,12 @@ http://localhost:5001/swagger
 - Este projeto é parte de um curso acadêmico e não aceita contribuições externas. 
 - Para feedbacks ou dúvidas utilize o recurso de Issues
 - O arquivo `FEEDBACK.md` é um resumo das avaliações do instrutor e deverá ser modificado apenas por ele.
+
+
+### Decisões Técnicas
+
+Aqui segue algumas decisões ténicas tomadas durante o desenvolvimento do projeto, considerando que deverá ser um projeto simples e de fácil manutenção, portanto diversos recursos avançados são decididamente não utilizados.
+
+- No projeto Business, nos serviços que registram as models, não terá validação pelos seus DataAnnotations, pois a validação deverá ser feita anteriormente pela Controller.
+- No projeto API foi decidido utilizar DTO (ViewModel) para o input/output de dados, para que a API seja independente do modelo de dados e fique mais clara para quem for a utilizar dos dados necessários e disponíveis, e para isso também foi utilizado AutoMapper para facilitar a conversão entre DTO e Model.
+- Também foi decidido não utilizar muitas interfaces para os services do projeto Business, pois o projeto é pequeno e não há necessidade de muitas implementações diferentes para os services.

@@ -57,5 +57,46 @@ namespace Blog.Api.Controllers
 
             return Ok(new ResponseSuccess(post.Id));
         }
+
+        [HttpPut("{id:guid}")]
+        [Authorize]
+        [ProducesResponseType(typeof(ResponseSuccess), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> EditarPost([FromRoute] Guid id, [FromBody] EditarPostViewModel viewModel)
+        {
+            var post = _mapper.Map<EditarPostViewModel, Post>(viewModel) ?? throw new ArgumentNullException();
+            post.Id = id;
+
+            var postAlterado = await _postService.EditarPostAsync(post);
+            if (postAlterado == null)
+                return NotFound();
+
+            return Ok(new ResponseSuccess(postAlterado.Id));
+        }
+
+        [HttpDelete("{id:guid}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeletarPost([FromRoute] Guid id)
+        {
+            if (await _postService.DeletarPostAsync(id))
+                return Ok();
+
+            return NotFound();
+        }
+
+        [HttpPatch("{id:guid}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AtivarPost([FromRoute] Guid id)
+        {
+            if (await _postService.AtivarPostAsync(id))
+                return Ok();
+
+            return NotFound();
+        }
     }
 }
