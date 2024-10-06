@@ -101,6 +101,7 @@ http://localhost:5001/swagger
 - Para feedbacks ou dúvidas utilize o recurso de Issues
 - O arquivo `FEEDBACK.md` é um resumo das avaliações do instrutor e deverá ser modificado apenas por ele.
 
+---
 
 ### Decisões Técnicas
 
@@ -108,4 +109,13 @@ Aqui segue algumas decisões ténicas tomadas durante o desenvolvimento do proje
 
 - No projeto Business, nos serviços que registram as models, não terá validação pelos seus DataAnnotations, pois a validação deverá ser feita anteriormente pela Controller.
 - No projeto API foi decidido utilizar DTO (ViewModel) para o input/output de dados, para que a API seja independente do modelo de dados e fique mais clara para quem for a utilizar dos dados necessários e disponíveis, e para isso também foi utilizado AutoMapper para facilitar a conversão entre DTO e Model.
-- Também foi decidido não utilizar muitas interfaces para os services do projeto Business, pois o projeto é pequeno e não há necessidade de muitas implementações diferentes para os services.
+- Também foi decidido não utilizar muitas interfaces para os services do projeto Business, pois este projeto (blog) é pequeno e não há necessidade de muitas implementações diferentes para os services.
+- Posts e Comentários nunca são excluídos permanente, apenas marcados como excluido, para manter a integridade dos dados.
+- Não está utilizando Nullable (true) nos projetos
+
+### Débitos Técnicos
+
+Listarei aqui alguns débitos técnicos que não foram implementados no projeto, mas que poderiam ser implementados para melhorar a qualidade do projeto no futuro.
+
+- Não foi implementado testes unitários.
+- Melhorar a linguagem ubíqua, como alterar/editar, deletar/excluir, entre outras.

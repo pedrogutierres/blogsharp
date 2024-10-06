@@ -10,6 +10,9 @@ using System.Net.Mime;
 
 namespace Blog.Api.Controllers
 {
+    /// <summary>
+    /// Controller responsável por gerenciar os posts
+    /// </summary>
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
     [Route("api/posts")]
@@ -18,12 +21,22 @@ namespace Blog.Api.Controllers
         private readonly PostService _postService;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Construtor da classe
+        /// </summary>
+        /// <param name="postService">Serviço para gerenciamento dos posts com a base de dados</param>
+        /// <param name="mapper">Interface para facilitar a transferência de dados entre Models e DTO's</param>
         public PostsController(PostService postService, IMapper mapper)
         {
             _postService = postService;
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Obter todos os posts ativos
+        /// </summary>
+        /// <param name="meusPosts">Possibilita listar apenas os posts vinculados ao usuário logado</param>
+        /// <returns>Retorna uma lista dos posts</returns>
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<PostResumidoViewModel>), StatusCodes.Status200OK)]
@@ -32,6 +45,11 @@ namespace Blog.Api.Controllers
             return _postService.ObterPostsAsync(meusPosts);
         }
 
+        /// <summary>
+        /// Obter os detalhes completos de posts, como autor e comentários
+        /// </summary>
+        /// <param name="id">ID do post</param>
+        /// <returns>Retorna os detalhes completo do post</returns>
         [HttpGet("{id:guid}")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(PostViewModel), StatusCodes.Status200OK)]
@@ -49,6 +67,11 @@ namespace Blog.Api.Controllers
             return postMapper;
         }
 
+        /// <summary>
+        /// Publicar um post
+        /// </summary>
+        /// <param name="viewModel">Dados do post</param>
+        /// <returns>Retorna o ID do post publicado</returns>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(ResponseSuccess), StatusCodes.Status200OK)]
@@ -62,6 +85,12 @@ namespace Blog.Api.Controllers
             return Ok(new ResponseSuccess(post.Id));
         }
 
+        /// <summary>
+        /// Editar um post
+        /// </summary>
+        /// <param name="id">ID do post</param>
+        /// <param name="viewModel">Dados do post alterado</param>
+        /// <returns>Retorna o ID do post alterado</returns>
         [HttpPut("{id:guid}")]
         [Authorize]
         [ProducesResponseType(typeof(ResponseSuccess), StatusCodes.Status200OK)]
@@ -79,6 +108,11 @@ namespace Blog.Api.Controllers
             return Ok(new ResponseSuccess(postAlterado.Id));
         }
 
+        /// <summary>
+        /// Deletar um post
+        /// </summary>
+        /// <param name="id">ID do post</param>
+        /// <returns>Retorna OK quando o post for deletado</returns>
         [HttpDelete("{id:guid}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -91,6 +125,11 @@ namespace Blog.Api.Controllers
             return NotFound();
         }
 
+        /// <summary>
+        /// Ativar um posto que está desativado (excluído)
+        /// </summary>
+        /// <param name="id">ID do post</param>
+        /// <returns>Retorna OK quando o post for ativado</returns>
         [HttpPatch("{id:guid}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]

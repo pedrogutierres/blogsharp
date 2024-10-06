@@ -9,6 +9,9 @@ using System.Net.Mime;
 
 namespace Blog.Api.Controllers
 {
+    /// <summary>
+    /// Controller responsável por gerenciar os usuários
+    /// </summary>
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
     [Route("api/usuarios")]
@@ -17,6 +20,11 @@ namespace Blog.Api.Controllers
         private readonly AutenticacaoService _autenticacaoService;
         private readonly JwtTokenGenerate _jwtTokenGenerate;
 
+        /// <summary>
+        /// Construtor da classe
+        /// </summary>
+        /// <param name="autenticacaoService">Serviço para autenticação do usuário utilizando atualmente Identity</param>
+        /// <param name="jwtTokenGenerate">Classe responsável por gerar o token JWT</param>
         public UsuariosController(
             AutenticacaoService autenticacaoService,
             JwtTokenGenerate jwtTokenGenerate)
@@ -24,7 +32,12 @@ namespace Blog.Api.Controllers
             _autenticacaoService = autenticacaoService;
             _jwtTokenGenerate = jwtTokenGenerate;
         }
-
+        
+        /// <summary>
+        /// Realizar o login do usuário
+        /// </summary>
+        /// <param name="login">Dados do usuário</param>
+        /// <returns>Retorna um objeto com o token e outros dados do usuário</returns>
         [HttpPost("login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]
@@ -41,6 +54,11 @@ namespace Blog.Api.Controllers
             });
         }
 
+        /// <summary>
+        /// Registrar um usuário (autor)
+        /// </summary>
+        /// <param name="registrar">Dados do usuário (autor)</param>
+        /// <returns>Retorna um objeto com o token e outros dados do usuário</returns>
         [HttpPost("registrar")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthToken), StatusCodes.Status200OK)]

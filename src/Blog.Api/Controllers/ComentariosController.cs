@@ -9,6 +9,9 @@ using System.Net.Mime;
 
 namespace Blog.Api.Controllers
 {
+    /// <summary>
+    /// Controller responsável por gerenciar os comentários
+    /// </summary>
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
     [Route("api/comentarios")]
@@ -17,12 +20,22 @@ namespace Blog.Api.Controllers
         private readonly ComentariosService _comentariosService;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Construtor da classe
+        /// </summary>
+        /// <param name="comentarioService">Serviço para gerenciamento dos comentários com a base de dados</param>
+        /// <param name="mapper">Interface para facilitar a transferência de dados entre Models e DTO's</param>
         public ComentariosController(ComentariosService comentarioService, IMapper mapper)
         {
             _comentariosService = comentarioService;
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Obter todos os comentários de um Post
+        /// </summary>
+        /// <param name="postId">ID do post</param>
+        /// <returns>Retorna uma lista dos comentários</returns>
         [HttpGet("posts/{postId:guid}")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<ComentarioViewModel>), StatusCodes.Status200OK)]
@@ -31,6 +44,12 @@ namespace Blog.Api.Controllers
             return _mapper.Map<IEnumerable<Comentario>, IEnumerable<ComentarioViewModel>>(await _comentariosService.ObterComentariosAsync(postId));
         }
 
+        /// <summary>
+        /// Publicar um comentário em um Post
+        /// </summary>
+        /// <param name="postId">ID do post</param>
+        /// <param name="viewModel">Dados do comentário</param>
+        /// <returns>Retorna o ID do comentário publicado</returns>
         [HttpPost("posts/{postId:guid}")]
         [Authorize]
         [ProducesResponseType(typeof(ResponseSuccess), StatusCodes.Status200OK)]
@@ -45,6 +64,12 @@ namespace Blog.Api.Controllers
             return Ok(new ResponseSuccess(comentario.Id));
         }
 
+        /// <summary>
+        /// Editar um comentário
+        /// </summary>
+        /// <param name="id">ID do comentário</param>
+        /// <param name="viewModel">Dados do comentário alterado</param>
+        /// <returns>Retorna o ID do comentário alterado</returns>
         [HttpPut("{id:guid}")]
         [Authorize]
         [ProducesResponseType(typeof(ResponseSuccess), StatusCodes.Status200OK)]
@@ -62,6 +87,11 @@ namespace Blog.Api.Controllers
             return Ok(new ResponseSuccess(comentarioAlterado.Id));
         }
 
+        /// <summary>
+        /// Deletar um comentário
+        /// </summary>
+        /// <param name="id">ID do comentário</param>
+        /// <returns>Retorna OK quando o comentário for deletado</returns>
         [HttpDelete("{id:guid}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
