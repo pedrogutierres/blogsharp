@@ -85,7 +85,9 @@ namespace Blog.Web.Areas.Identity.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             if (Input.NewEmail != email)
             {
-                await _userManager.SetEmailAsync(user, Input.NewEmail);
+                await _userManager.SetUserNameAsync(user, Input.NewEmail);
+                await _userManager.UpdateNormalizedUserNameAsync(user);
+                await _userManager.ChangeEmailAsync(user, Input.NewEmail, await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail));
                 //await _emailStore.SetEmailAsync(user, Input.NewEmail, CancellationToken.None);
                 //await _emailStore.SetEmailConfirmedAsync(user, true, CancellationToken.None);
 

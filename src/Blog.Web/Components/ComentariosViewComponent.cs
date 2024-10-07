@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Components
 {
-    [ViewComponent(Name = "ComentariosViewComponent")]
     public class ComentariosViewComponent : ViewComponent
     {
         private readonly ComentariosService _comentariosService;

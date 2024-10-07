@@ -181,7 +181,9 @@ namespace Blog.Api.Controllers
             var email = await _userManager.GetEmailAsync(user);
             if (alterar.NovoEmail != email)
             {
-                var result = await _userManager.SetEmailAsync(user, alterar.NovoEmail);
+                await _userManager.SetUserNameAsync(user, alterar.NovoEmail);
+                await _userManager.UpdateNormalizedUserNameAsync(user);
+                var result = await _userManager.ChangeEmailAsync(user, alterar.NovoEmail, await _userManager.GenerateChangeEmailTokenAsync(user, alterar.NovoEmail));
                 if (!result.Succeeded)
                 {
                     return BadRequest(new ProblemDetails
