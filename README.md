@@ -84,6 +84,14 @@ A estrutura do projeto é organizada da seguinte forma:
    - `dotnet run`
    - Acesse a documentação da API em: http://localhost:5001/swagger ou https://localhost:5003/swagger
 
+### **Uso do Blog**
+
+1. **Usuário Administrador Padrão:** Poderá ser utilizado como o administrador do site, onde poderá visualizar, editar e excluir qualquer post ou comentário.
+   - email: `admin@blogsharp.com`
+   - senha: `Blog@123456`
+   
+2. **Usuários Autores:** Poderá ser criado mormalmente através do portal, todo novo usuário será um Autor automaticamente.
+
 ## **7. Instruções de Configuração**
 
 - **JWT para API:** As chaves de configuração do JWT estão no `appsettings.json`.
