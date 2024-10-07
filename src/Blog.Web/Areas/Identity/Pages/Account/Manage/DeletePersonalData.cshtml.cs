@@ -2,32 +2,28 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Blog.Data;
+using Blog.Business.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Web.Areas.Identity.Pages.Account.Manage
 {
     public class DeletePersonalDataModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AutenticacaoService _autenticacaoService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
 
         public DeletePersonalDataModel(
-            ApplicationDbContext context,
+            AutenticacaoService autenticacaoService,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<DeletePersonalDataModel> logger)
         {
-            _context = context;
+            _autenticacaoService = autenticacaoService;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
@@ -83,7 +79,7 @@ namespace Blog.Web.Areas.Identity.Pages.Account.Manage
                 throw new InvalidOperationException($"Não foi possível deletar o usuário.");
             }
 
-            _context.Autores.Remove(await _context.Autores.FirstOrDefaultAsync(a => a.Id == Guid.Parse(userId)));
+            await _autenticacaoService.InativarUsuarioAsync(Guid.Parse(user.Id));
 
             await _signInManager.SignOutAsync();
 

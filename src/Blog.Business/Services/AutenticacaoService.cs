@@ -120,6 +120,18 @@ namespace Blog.Business.Services
             }
         }
 
+        public async Task<bool> InativarUsuarioAsync(Guid id)
+        {
+            var autor = await _context.Autores.FindAsync(id);
+            autor.Ativo = false;
+
+            var posts = await _context.Posts.Where(p => p.AutorId == id).ToListAsync();
+            foreach (var post in posts)
+                post.Excluido = true;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         private IdentityUser CreateUser()
         {
             try

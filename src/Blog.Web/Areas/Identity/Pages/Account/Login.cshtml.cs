@@ -87,6 +87,12 @@ namespace Blog.Web.Areas.Identity.Pages.Account
                     _logger.LogInformation("Usuário logado por senha.");
 
                     var autor = await _context.Autores.FindAsync(Guid.Parse(HttpContext.User.GetUserId()));
+                    if (autor?.Ativo == false)
+                    {
+                        ModelState.AddModelError(string.Empty, "Usuário inativo.");
+                        return Page();
+                    }
+
                     var user = await _userManager.FindByEmailAsync(Input.Email);
                     var customClaims = await _userManager.GetCustomClaimsAsync(user, autor.Nome, autor.Sobrenome);
                     await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, customClaims);

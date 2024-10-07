@@ -2,13 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
+using Blog.Data;
+using Blog.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -16,13 +15,16 @@ namespace Blog.Web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         [Display(Name = "E-mail")]
@@ -36,6 +38,14 @@ namespace Blog.Web.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Required(ErrorMessage = "O nome deve ser informado.")]
+            [Display(Name = "Nome")]
+            public string FirstName { get; set; }
+
+            [Required(ErrorMessage = "O sobrenome deve ser informado.")]
+            [Display(Name = "Sobrenome")]
+            public string LastName { get; set; }
+
             [Phone(ErrorMessage = "O telefone está inválido.")]
             [Display(Name = "Telefone")]
             public string PhoneNumber { get; set; }
@@ -48,8 +58,12 @@ namespace Blog.Web.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
 
+            var autor = await _context.Autores.FindAsync(Guid.Parse(user.Id));
+            
             Input = new InputModel
             {
+                FirstName = autor?.Nome,
+                LastName = autor?.Sobrenome,
                 PhoneNumber = phoneNumber
             };
         }
@@ -91,8 +105,24 @@ namespace Blog.Web.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            var autor = await _context.Autores.FindAsync(Guid.Parse(user.Id));
+            if (autor == null)
+            {
+                StatusMessage = "Autor vinculado ao usuário não foi encontrado.";
+                return RedirectToPage();
+            }
+
+            autor.Nome = Input.FirstName?.Trim();
+            autor.Sobrenome = Input.LastName?.Trim();
+
+            await _context.SaveChangesAsync();
+
+            //await _signInManager.RefreshSignInAsync(user);
+            var customClaims = await _userManager.GetCustomClaimsAsync(user, autor.Nome, autor.Sobrenome);
+            await _signInManager.SignInWithClaimsAsync(user, false, customClaims);
+
             StatusMessage = "Seus dados foram atualizados";
+
             return RedirectToPage();
         }
     }
