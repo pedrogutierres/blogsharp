@@ -29,6 +29,7 @@ namespace Blog.Api.Controllers
         /// </summary>
         /// <param name="autenticacaoService">Serviço para autenticação do usuário utilizando atualmente Identity</param>
         /// <param name="jwtTokenGenerate">Classe responsável por gerar o token JWT</param>
+        /// <param name="user">Usuário autenticado</param>
         public UsuariosController(
             AutenticacaoService autenticacaoService,
             JwtTokenGenerate jwtTokenGenerate,

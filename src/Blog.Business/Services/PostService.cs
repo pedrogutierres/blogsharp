@@ -3,21 +3,44 @@ using Blog.Data;
 using Blog.Data.Models;
 using Blog.Identity.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Blog.Business.Services
 {
     public class PostService
     {
+        private const string CacheKey_Posts = "Posts";
+        private const string CacheKey_PostId = "Post";
+
         private readonly ApplicationDbContext _context;
         private readonly IUser _user;
+        private readonly IMemoryCache _cache;
 
-        public PostService(ApplicationDbContext context, IUser user)
+        public PostService(ApplicationDbContext context, IUser user, IMemoryCache cache)
         {
             _context = context;
             _user = user;
+            _cache = cache;
         }
 
         public async Task<IEnumerable<PostResumidoViewModel>> ObterPostsAsync(bool meusPosts = false)
+        {
+            // Irá ter cache apenas para os Posts em geral, caso for meus posts ou usuário administrador, deverá mostrar sempre atualizado sem cache
+            var cacheKey = (_user?.Administrador() ?? false) || meusPosts ? null : CacheKey_Posts;
+
+            if (cacheKey != null)
+            {
+                return await _cache.GetOrCreateAsync(cacheKey, async entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+
+                    return await ObterPostsQueryAsync(meusPosts);
+                });
+            }
+            else
+                return await ObterPostsQueryAsync(meusPosts);
+        }
+        private async Task<IEnumerable<PostResumidoViewModel>> ObterPostsQueryAsync(bool meusPosts = false)
         {
             var queryable = _context.Posts.Include(p => p.Autor).AsQueryable();
 
@@ -48,13 +71,15 @@ namespace Blog.Business.Services
             ).ToListAsync();
         }
 
-        public Task<Post> ObterPostPorIdAsync(Guid id) => _context.Posts.Include(p => p.Autor).FirstOrDefaultAsync(m => m.Id == id);
+        public Task<Post> ObterPostPorIdAsync(Guid id) => _cache.GetOrCreateAsync($"{CacheKey_PostId}-{id}", entry => _context.Posts.Include(p => p.Autor).FirstOrDefaultAsync(m => m.Id == id));
 
         public async Task<bool> PublicarPostAsync(Post post)
         {
             post.AutorId = _user.UsuarioId().Value;
 
             _context.Add(post);
+
+            _cache.Remove(CacheKey_Posts);
 
             return await _context.SaveChangesAsync() > 0;
         }
@@ -74,6 +99,9 @@ namespace Blog.Business.Services
             try
             {
                 await _context.SaveChangesAsync();
+
+                _cache.Remove(CacheKey_Posts);
+                _cache.Remove($"{CacheKey_PostId}-{postOriginal.Id}");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -99,6 +127,9 @@ namespace Blog.Business.Services
 
             await _context.SaveChangesAsync();
 
+            _cache.Remove(CacheKey_Posts);
+            _cache.Remove($"{CacheKey_PostId}-{id}");
+
             return true;
         }
 
@@ -114,6 +145,9 @@ namespace Blog.Business.Services
             post.Excluido = false;
 
             await _context.SaveChangesAsync();
+
+            _cache.Remove(CacheKey_Posts);
+            _cache.Remove($"{CacheKey_PostId}-{id}");
 
             return true;
         }

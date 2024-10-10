@@ -21,6 +21,8 @@ builder.AddSwaggerConfig();
 
 builder.AddAutoMapperSetup();
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddScoped<IUser, AspNetUser>();
 builder.Services.AddScoped<AutenticacaoService>();
 builder.Services.AddScoped<PostService>();
