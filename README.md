@@ -125,5 +125,5 @@ Aqui segue algumas decisões ténicas tomadas durante o desenvolvimento do proje
 
 Listarei aqui alguns débitos técnicos que não foram implementados no projeto, mas que poderiam ser implementados para melhorar a qualidade do projeto no futuro.
 
-- Não foi implementado testes unitários.
-- Melhorar a linguagem ubíqua, como alterar/editar, deletar/excluir, entre outras.
+- Implementar testes unitários.
+- Melhorar a linguagem ubíqua, como post/postagem, cadastrar/registrar, alterar/editar, deletar/excluir, entre outras.
