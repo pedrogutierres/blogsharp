@@ -12,24 +12,13 @@ namespace Blog.Data
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {
-        }
+        { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
             base.OnModelCreating(builder);
-
-            builder.Entity<Post>()
-                .HasOne(p => p.Autor)
-                .WithMany(a => a.Posts)
-                .HasForeignKey(p => p.AutorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Comentario>()
-                .HasOne(c => c.Post)
-                .WithMany(p => p.Comentarios)
-                .HasForeignKey(c => c.PostId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

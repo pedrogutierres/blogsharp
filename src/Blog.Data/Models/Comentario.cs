@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog.Data.Models
 {
-    [Table("Comentarios")]
     public sealed class Comentario
     {
         [Key]
@@ -19,13 +17,9 @@ namespace Blog.Data.Models
         public DateTime DataHoraCriacao { get; set; } = DateTime.Now;
         public DateTime? DataHoraAlteracao { get; set; }
 
-        [Required]
-        [ForeignKey("Post")]
         public Guid PostId { get; set; }
         public Post Post { get; set; }
 
-        [Required]
-        [ForeignKey("Autor")]
         public Guid AutorId { get; set; }
         public Autor Autor { get; set; }
     }

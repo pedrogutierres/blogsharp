@@ -42,7 +42,7 @@ namespace Blog.Business.Services
         }
         private async Task<IEnumerable<PostResumidoViewModel>> ObterPostsQueryAsync(bool meusPosts = false)
         {
-            var queryable = _context.Posts.Include(p => p.Autor).AsQueryable();
+            var queryable = _context.Posts.Include(p => p.Autor).OrderByDescending(p => p.DataHoraCriacao).AsQueryable();
 
             if (meusPosts)
             {
