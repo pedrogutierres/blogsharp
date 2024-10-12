@@ -9,12 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Data", "src\Blog.Data\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Identity", "src\Blog.Identity\Blog.Identity.csproj", "{4230B8A5-FDD2-4BAC-8C3E-7E018E0475D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Api", "src\Blog.Api\Blog.Api.csproj", "{A7834831-45D8-43B9-9C35-5BDA039A6CE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Api", "src\Blog.Api\Blog.Api.csproj", "{A7834831-45D8-43B9-9C35-5BDA039A6CE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Business", "src\Blog.Business\Blog.Business.csproj", "{E789266C-CAF3-4BF5-87C6-1A8191A5FDA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Business", "src\Blog.Business\Blog.Business.csproj", "{E789266C-CAF3-4BF5-87C6-1A8191A5FDA0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE5A92FC-A3AA-481C-A96C-0094EB8E9E68}"
 	ProjectSection(SolutionItems) = preProject
+		FEEDBACK.md = FEEDBACK.md
 		README.md = README.md
 	EndProjectSection
 EndProject
