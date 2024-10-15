@@ -42,8 +42,7 @@ A estrutura do projeto é organizada da seguinte forma:
   - Blog.Web/ - Projeto MVC
   - Blog.Api/ - API RESTful
   - Blog.Data/ - Modelos de Dados e Configuração do EF Core
-  - Blog.Identity/ - Padronização da Autenticação
-  - Blog.Business/ - Camada de Negócio e Serviços
+  - Blog.Application/ - Camada de Aplicação
 - README.md - Arquivo de Documentação do Projeto
 - FEEDBACK.md - Arquivo para Consolidação dos Feedbacks
 - .gitignore - Arquivo de Ignoração do Git
@@ -115,9 +114,9 @@ http://localhost:5001/swagger
 
 Aqui segue algumas decisões ténicas tomadas durante o desenvolvimento do projeto, considerando que deverá ser um projeto simples e de fácil manutenção, portanto diversos recursos avançados são decididamente não utilizados.
 
-- No projeto Business, nos serviços que intermediam o registro das models em sua base de dados, não terá validação pelos seus DataAnnotations, pois a validação deverá ser feita anteriormente pela Controller. E aqui, não estou utilizando o padrão de repositórios, e sim um acesso mais direto ao contexto.
-- No projeto API foi decidido utilizar DTO (ViewModel) para o input/output de dados, para que a API seja um pouco independente do modelo de dados e fique mais claro para quem a for utilizar, quais são os dados necessários e disponíveis, e para isso também foi utilizado AutoMapper para facilitar a conversão entre DTO e Model.
-- Também foi decidido não utilizar muitas interfaces para os services do projeto Business, pois este projeto (blog) é pequeno e não há necessidade de muitas implementações diferentes para os services.
+- No projeto Application, nos serviços que intermediam o registro das models em sua base de dados, não terá validação pelos seus DataAnnotations, pois a validação deverá ser feita anteriormente pela Controller. E aqui, não estou utilizando o padrão de repositórios, e sim um acesso mais direto ao contexto.
+- No projeto API foi decidido utilizar DTO (ViewModel) personalizadas para o input/output de dados, para que a comunicação e documentação tenha apenas os campos necessários e disponíveis de cada comunicação, e para isso também foi utilizado AutoMapper para facilitar a conversão entre DTO e Model.
+- Também foi decidido não utilizar muitas interfaces para os services do projeto Application, pois este projeto (blog) é pequeno e não há necessidade de muitas implementações diferentes para os services.
 - Posts e Comentários nunca são excluídos permanente, apenas marcados como excluido, para manter a integridade dos dados.
 - Não está utilizando Nullable (true) nos projetos
 
