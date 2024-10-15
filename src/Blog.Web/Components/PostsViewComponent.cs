@@ -1,4 +1,4 @@
-﻿using Blog.Business.Services;
+﻿using Blog.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Components

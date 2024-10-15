@@ -1,8 +1,7 @@
-﻿using Blog.Identity.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace Blog.Identity.Models
+namespace Blog.Application.Identity
 {
     public class AspNetUser : IUser
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Blog.Identity.Extensions
+namespace Blog.Application.Extensions
 {
     public class PortugueseIdentityErrorDescriber : IdentityErrorDescriber
     {

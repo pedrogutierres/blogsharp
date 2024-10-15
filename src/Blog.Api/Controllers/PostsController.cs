@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Blog.Api.ViewModels;
 using Blog.Api.ViewModels.Posts;
-using Blog.Business.Application.ViewModels.Posts;
-using Blog.Business.Services;
+using Blog.Application.Services;
+using Blog.Application.ViewModels.Posts;
 using Blog.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

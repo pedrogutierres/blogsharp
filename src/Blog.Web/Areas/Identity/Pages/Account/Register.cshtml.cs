@@ -2,12 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using Blog.Business.Exceptions;
-using Blog.Business.Services;
-using Blog.Identity.Models;
+using Blog.Application.Exceptions;
+using Blog.Application.Identity;
+using Blog.Application.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;

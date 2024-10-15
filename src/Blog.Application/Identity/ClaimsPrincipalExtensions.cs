@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
-namespace Blog.Identity.Models
+namespace Blog.Application.Identity
 {
     public static class ClaimsPrincipalExtensions
     {

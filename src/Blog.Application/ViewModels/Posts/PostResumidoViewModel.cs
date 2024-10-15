@@ -1,6 +1,6 @@
-﻿using Blog.Business.Helpers;
+﻿using Blog.Application.Helpers;
 
-namespace Blog.Business.Application.ViewModels.Posts
+namespace Blog.Application.ViewModels.Posts
 {
     /// <summary>
     /// Dados resumidos de um post

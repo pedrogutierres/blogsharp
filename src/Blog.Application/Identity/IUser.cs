@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Blog.Identity.Interfaces
+namespace Blog.Application.Identity
 {
     public interface IUser
     {

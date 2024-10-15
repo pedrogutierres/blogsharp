@@ -1,11 +1,11 @@
-﻿using Blog.Business.Application.ViewModels.Posts;
+﻿using Blog.Application.Identity;
+using Blog.Application.ViewModels.Posts;
 using Blog.Data;
 using Blog.Data.Models;
-using Blog.Identity.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Blog.Business.Services
+namespace Blog.Application.Services
 {
     public class PostService
     {

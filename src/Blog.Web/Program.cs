@@ -1,9 +1,8 @@
-using Blog.Business.Services;
+using Blog.Application.Extensions;
+using Blog.Application.Identity;
+using Blog.Application.Services;
 using Blog.Data;
 using Blog.Data.Helpers;
-using Blog.Identity.Extensions;
-using Blog.Identity.Interfaces;
-using Blog.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;

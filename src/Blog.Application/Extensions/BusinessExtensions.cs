@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Blog.Business.Extensions
+namespace Blog.Application.Extensions
 {
     public static class BusinessExtensions
     {

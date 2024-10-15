@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Blog.Business.Exceptions
+namespace Blog.Application.Exceptions
 {
     public class BusinessException : Exception
     {

@@ -1,4 +1,4 @@
-﻿using Blog.Business.Exceptions;
+﻿using Blog.Application.Exceptions;
 using Blog.Data;
 using Blog.Data.Models;
 using Microsoft.AspNetCore.Identity;
@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Data.Common;
 
-namespace Blog.Business.Services
+namespace Blog.Application.Services
 {
     public class AutenticacaoService
     {

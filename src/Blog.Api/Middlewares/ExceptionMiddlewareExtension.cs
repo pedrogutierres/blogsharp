@@ -1,5 +1,5 @@
-﻿using Blog.Business.Exceptions;
-using Blog.Business.Extensions;
+﻿using Blog.Application.Exceptions;
+using Blog.Application.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Blog.Data\Blog.Data.csproj" />
-    <ProjectReference Include="..\Blog.Identity\Blog.Identity.csproj" />
   </ItemGroup>
 
 </Project>

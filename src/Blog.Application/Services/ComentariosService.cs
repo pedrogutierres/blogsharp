@@ -1,9 +1,9 @@
-﻿using Blog.Data;
+﻿using Blog.Application.Identity;
+using Blog.Data;
 using Blog.Data.Models;
-using Blog.Identity.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Blog.Business.Services
+namespace Blog.Application.Services
 {
     public class ComentariosService
     {

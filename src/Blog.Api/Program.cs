@@ -1,9 +1,8 @@
 using Blog.Api.Configurations;
 using Blog.Api.Middlewares;
-using Blog.Business.Services;
+using Blog.Application.Identity;
+using Blog.Application.Services;
 using Blog.Data.Helpers;
-using Blog.Identity.Interfaces;
-using Blog.Identity.Models;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 

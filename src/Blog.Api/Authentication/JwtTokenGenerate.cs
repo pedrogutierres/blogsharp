@@ -1,5 +1,5 @@
-﻿using Blog.Data;
-using Blog.Identity.Models;
+﻿using Blog.Application.Identity;
+using Blog.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

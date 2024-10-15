@@ -1,13 +1,12 @@
 ﻿using Blog.Api.Authentication;
 using Blog.Api.ViewModels.Usuarios;
-using Blog.Business.Exceptions;
-using Blog.Business.Services;
+using Blog.Application.Exceptions;
+using Blog.Application.Identity;
+using Blog.Application.Services;
 using Blog.Data;
-using Blog.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net.Mime;
 
 namespace Blog.Api.Controllers

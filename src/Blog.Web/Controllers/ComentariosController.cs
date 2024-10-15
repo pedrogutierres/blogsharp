@@ -1,11 +1,7 @@
-﻿using Blog.Business.Services;
-using Blog.Data;
+﻿using Blog.Application.Services;
 using Blog.Data.Models;
-using Blog.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace Blog.Web.Controllers
