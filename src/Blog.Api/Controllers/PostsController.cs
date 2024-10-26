@@ -39,8 +39,8 @@ namespace Blog.Api.Controllers
         /// <returns>Retorna uma lista dos posts</returns>
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(IEnumerable<PostResumidoViewModel>), StatusCodes.Status200OK)]
-        public Task<IEnumerable<PostResumidoViewModel>> ObterPosts([FromQuery(Name = "meus-posts")] bool meusPosts = false)
+        [ProducesResponseType(typeof(IEnumerable<PostQueryViewModel>), StatusCodes.Status200OK)]
+        public Task<IEnumerable<PostQueryViewModel>> ObterPosts([FromQuery(Name = "meus-posts")] bool meusPosts = false)
         {
             return _postService.ObterPostsAsync(meusPosts);
         }

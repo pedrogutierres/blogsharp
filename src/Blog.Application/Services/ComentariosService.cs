@@ -36,7 +36,7 @@ namespace Blog.Application.Services
             if (comentarioOriginal == null)
                 return null;
 
-            if (!_user.Administrador() && comentarioOriginal.AutorId != _user.UsuarioId().Value)
+            if (!UsuarioAutorizado(comentarioOriginal.AutorId))
                 throw new UnauthorizedAccessException("Usuário não autorizado a editar o comentário que não é dele.");
 
             comentarioOriginal.Conteudo = comentario.Conteudo;
@@ -62,7 +62,7 @@ namespace Blog.Application.Services
             if (comentario == null)
                 return null;
 
-            if (!_user.Administrador() && comentario.AutorId != _user.UsuarioId().Value)
+            if (!UsuarioAutorizado(comentario.AutorId))
                 throw new UnauthorizedAccessException("Usuário não autorizado a excluir o comentário que não é dele.");
 
             comentario.Excluido = true;
@@ -74,5 +74,7 @@ namespace Blog.Application.Services
         }
 
         private async Task<bool> ComentarioExists(Guid id) => await _context.Comentarios.AnyAsync(e => e.Id == id);
+
+        private bool UsuarioAutorizado(Guid id) => _user.Administrador() || id == _user.UsuarioId().Value;
     }
 }

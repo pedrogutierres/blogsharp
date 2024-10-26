@@ -5,7 +5,7 @@ namespace Blog.Application.ViewModels.Posts
     /// <summary>
     /// Dados resumidos de um post
     /// </summary>
-    public class PostResumidoViewModel
+    public class PostQueryViewModel
     {
         /// <summary>
         /// Identificador único

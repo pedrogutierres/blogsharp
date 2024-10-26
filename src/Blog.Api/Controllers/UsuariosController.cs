@@ -123,7 +123,7 @@ namespace Blog.Api.Controllers
             if (user == null)
                 return NotFound();
 
-            if (user.Id != _user.UsuarioId().Value.ToString())
+            if (!UsuarioAutorizado(user.Id))
                 throw new UnauthorizedAccessException("Usuário não autorizado a alterar o cadastro que não pertence a ele.");
 
             var telefone = await _userManager.GetPhoneNumberAsync(user);
@@ -175,7 +175,7 @@ namespace Blog.Api.Controllers
             if (user == null)
                 return NotFound();
 
-            if (user.Id != _user.UsuarioId().Value.ToString())
+            if (!UsuarioAutorizado(user.Id))
                 throw new UnauthorizedAccessException("Usuário não autorizado a alterar o e-mail que não pertence a ele.");
 
             var email = await _userManager.GetEmailAsync(user);
@@ -214,7 +214,7 @@ namespace Blog.Api.Controllers
             if (user == null)
                 return NotFound();
 
-            if (user.Id != _user.UsuarioId().Value.ToString())
+            if (!UsuarioAutorizado(user.Id))
                 throw new UnauthorizedAccessException("Usuário não autorizado a alterar o e-mail que não pertence a ele.");
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, alterar.SenhaAtual, alterar.NovaSenha);
@@ -256,7 +256,7 @@ namespace Blog.Api.Controllers
             if (user == null)
                 return NotFound();
 
-            if (user.Id != _user.UsuarioId().Value.ToString())
+            if (!UsuarioAutorizado(user.Id))
                 throw new UnauthorizedAccessException("Usuário não autorizado a excluir cadastro que não pertence a ele.");
 
             if (!await _userManager.CheckPasswordAsync(user, deletar.Senha))
@@ -276,5 +276,7 @@ namespace Blog.Api.Controllers
 
             return Ok();
         }
+
+        private bool UsuarioAutorizado(string id) => id == _user.UsuarioId().Value.ToString();
     }
 }

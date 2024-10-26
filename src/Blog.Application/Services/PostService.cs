@@ -23,7 +23,7 @@ namespace Blog.Application.Services
             _cache = cache;
         }
 
-        public async Task<IEnumerable<PostResumidoViewModel>> ObterPostsAsync(bool meusPosts = false)
+        public async Task<IEnumerable<PostQueryViewModel>> ObterPostsAsync(bool meusPosts = false)
         {
             // Irá ter cache apenas para os Posts em geral, caso for meus posts ou usuário administrador, deverá mostrar sempre atualizado sem cache
             var cacheKey = (_user?.Administrador() ?? false) || meusPosts ? null : CacheKey_Posts;
@@ -40,7 +40,7 @@ namespace Blog.Application.Services
             else
                 return await ObterPostsQueryAsync(meusPosts);
         }
-        private async Task<IEnumerable<PostResumidoViewModel>> ObterPostsQueryAsync(bool meusPosts = false)
+        private async Task<IEnumerable<PostQueryViewModel>> ObterPostsQueryAsync(bool meusPosts = false)
         {
             var queryable = _context.Posts.Include(p => p.Autor).OrderByDescending(p => p.DataHoraCriacao).AsQueryable();
 
@@ -58,7 +58,7 @@ namespace Blog.Application.Services
             }
 
             return await queryable.Select(p =>
-                new PostResumidoViewModel
+                new PostQueryViewModel
                 {
                     Id = p.Id,
                     Titulo = p.Titulo,
@@ -90,7 +90,7 @@ namespace Blog.Application.Services
             if (postOriginal == null)
                 return null;
 
-            if (!_user.Administrador() && postOriginal.AutorId != _user.UsuarioId().Value)
+            if (!UsuarioAutorizado(postOriginal.AutorId))
                 throw new UnauthorizedAccessException("Usuário não autorizado a editar o post pois não pertence ao mesmo.");
 
             postOriginal.Titulo = post.Titulo;
@@ -100,8 +100,7 @@ namespace Blog.Application.Services
             {
                 await _context.SaveChangesAsync();
 
-                _cache.Remove(CacheKey_Posts);
-                _cache.Remove($"{CacheKey_PostId}-{postOriginal.Id}");
+                LimparCachePostId(postOriginal.Id);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -120,15 +119,14 @@ namespace Blog.Application.Services
             if (post == null)
                 return false;
 
-            if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
+            if (!UsuarioAutorizado(post.AutorId))
                 throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
 
             post.Excluido = true;
 
             await _context.SaveChangesAsync();
-
-            _cache.Remove(CacheKey_Posts);
-            _cache.Remove($"{CacheKey_PostId}-{id}");
+            
+            LimparCachePostId(id);
 
             return true;
         }
@@ -139,19 +137,26 @@ namespace Blog.Application.Services
             if (post == null)
                 return false;
 
-            if (!_user.Administrador() && post.AutorId != _user.UsuarioId().Value)
+            if (!UsuarioAutorizado(post.AutorId))
                 throw new UnauthorizedAccessException("Usuário não autorizado a excluir o post pois não pertence ao mesmo.");
 
             post.Excluido = false;
 
             await _context.SaveChangesAsync();
 
-            _cache.Remove(CacheKey_Posts);
-            _cache.Remove($"{CacheKey_PostId}-{id}");
+            LimparCachePostId(id);
 
             return true;
         }
 
+        private void LimparCachePostId(Guid id)
+        {
+            _cache.Remove(CacheKey_Posts);
+            _cache.Remove($"{CacheKey_PostId}-{id}");
+        }
+
         private async Task<bool> PostExists(Guid id) => await _context.Posts.AnyAsync(e => e.Id == id);
+
+        private bool UsuarioAutorizado(Guid id) => _user.Administrador() || id == _user.UsuarioId().Value;
     }
 }
