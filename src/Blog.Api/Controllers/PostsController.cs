@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Blog.Api.ViewModels;
 using Blog.Api.ViewModels.Posts;
+using Blog.Application.Queries;
 using Blog.Application.Services;
-using Blog.Application.ViewModels.Posts;
 using Blog.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +39,8 @@ namespace Blog.Api.Controllers
         /// <returns>Retorna uma lista dos posts</returns>
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(IEnumerable<PostQueryViewModel>), StatusCodes.Status200OK)]
-        public Task<IEnumerable<PostQueryViewModel>> ObterPosts([FromQuery(Name = "meus-posts")] bool meusPosts = false)
+        [ProducesResponseType(typeof(IEnumerable<PostQueryModel>), StatusCodes.Status200OK)]
+        public Task<IEnumerable<PostQueryModel>> ObterPosts([FromQuery(Name = "meus-posts")] bool meusPosts = false)
         {
             return _postService.ObterPostsAsync(meusPosts);
         }

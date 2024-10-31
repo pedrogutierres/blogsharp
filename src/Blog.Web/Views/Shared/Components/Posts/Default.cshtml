@@ -1,5 +1,6 @@
 ﻿@using Blog.Application.Identity
-@model IEnumerable<Blog.Application.ViewModels.Posts.PostQueryViewModel>
+@using Blog.Application.Queries
+@model IEnumerable<PostQueryModel>
 @inject IUser _user;
 
 @if ((_user?.Autenticado() ?? false))

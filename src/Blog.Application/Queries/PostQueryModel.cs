@@ -1,11 +1,11 @@
 ﻿using Blog.Application.Helpers;
 
-namespace Blog.Application.ViewModels.Posts
+namespace Blog.Application.Queries
 {
     /// <summary>
     /// Dados resumidos de um post
     /// </summary>
-    public class PostQueryViewModel
+    public class PostQueryModel
     {
         /// <summary>
         /// Identificador único

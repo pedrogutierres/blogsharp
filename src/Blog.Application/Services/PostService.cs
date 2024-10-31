@@ -1,5 +1,5 @@
 ﻿using Blog.Application.Identity;
-using Blog.Application.ViewModels.Posts;
+using Blog.Application.Queries;
 using Blog.Data;
 using Blog.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +23,7 @@ namespace Blog.Application.Services
             _cache = cache;
         }
 
-        public async Task<IEnumerable<PostQueryViewModel>> ObterPostsAsync(bool meusPosts = false)
+        public async Task<IEnumerable<PostQueryModel>> ObterPostsAsync(bool meusPosts = false)
         {
             // Irá ter cache apenas para os Posts em geral, caso for meus posts ou usuário administrador, deverá mostrar sempre atualizado sem cache
             var cacheKey = (_user?.Administrador() ?? false) || meusPosts ? null : CacheKey_Posts;
@@ -40,7 +40,7 @@ namespace Blog.Application.Services
             else
                 return await ObterPostsQueryAsync(meusPosts);
         }
-        private async Task<IEnumerable<PostQueryViewModel>> ObterPostsQueryAsync(bool meusPosts = false)
+        private async Task<IEnumerable<PostQueryModel>> ObterPostsQueryAsync(bool meusPosts = false)
         {
             var queryable = _context.Posts.Include(p => p.Autor).OrderByDescending(p => p.DataHoraCriacao).AsQueryable();
 
@@ -58,7 +58,7 @@ namespace Blog.Application.Services
             }
 
             return await queryable.Select(p =>
-                new PostQueryViewModel
+                new PostQueryModel
                 {
                     Id = p.Id,
                     Titulo = p.Titulo,
