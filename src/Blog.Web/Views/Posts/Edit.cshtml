@@ -25,11 +25,23 @@
             </div>
             <div class="form-group col-12 col-md-6">
                 <label asp-for="Imagem" class="control-label"></label>
-                <input class="form-control" name="imagemUpload" type="file" />
+                <div class="row">
+                    <input class="form-control col-12" name="imagemUpload" type="file" onchange="previewImage(event)" />
+                    <div id="imagePreviewContainer" style="@(Model.Imagem?.Length > 0 ? "display:block;" : "display:none;")" class="col-12 mt-1 p-0">
+                        @if (Model.Imagem?.Length > 0)
+                        {
+                            <img id="imagePreview" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Imagem)" alt="Pré-visualização" class="rounded w-100" style="height: 150px;" />
+                        }
+                        else
+                        {
+                            <img id="imagePreview" src="" alt="Pré-visualização" class="rounded w-100" style="height: 150px;" />
+                        }
+                    </div>
+                </div>
                 <span asp-validation-for="Imagem" class="text-danger"></span>
             </div>
         </div>
-       
+
         <div class="form-group">
             <label asp-for="Conteudo" class="control-label"></label>
             <div id="editor" style="height: 300px;" class="rounded-bottom">
@@ -68,6 +80,23 @@
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
 <script>
+
+    function previewImage(event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+
+            // Quando o arquivo for lido, exiba a pré-visualização
+            reader.onload = function (e) {
+                // Defina a fonte da imagem com o resultado da leitura do arquivo
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('imagePreviewContainer').style.display = 'block';
+            };
+
+            // Leia o arquivo como uma URL de dados
+            reader.readAsDataURL(file);
+        }
+    }
 
     var quill = new Quill('#editor', {
         theme: 'snow'
