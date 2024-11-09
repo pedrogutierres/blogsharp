@@ -80,6 +80,13 @@ namespace Blog.Api.Controllers
         {
             var post = _mapper.Map<PublicarPostViewModel, Post>(viewModel) ?? throw new ArgumentNullException();
 
+            if (!string.IsNullOrEmpty(viewModel.ImagemBase64))
+            {
+                byte[] imageBytes = Convert.FromBase64String(viewModel.ImagemBase64);
+                if (imageBytes.Length > 0)
+                    post.Imagem = imageBytes;
+            }
+
             await _postService.PublicarPostAsync(post);
 
             return Ok(new ResponseSuccess(post.Id));
@@ -100,6 +107,13 @@ namespace Blog.Api.Controllers
         {
             var post = _mapper.Map<EditarPostViewModel, Post>(viewModel) ?? throw new ArgumentNullException();
             post.Id = id;
+
+            if (!string.IsNullOrEmpty(viewModel.ImagemBase64))
+            {
+                byte[] imageBytes = Convert.FromBase64String(viewModel.ImagemBase64);
+                if (imageBytes.Length > 0)
+                    post.Imagem = imageBytes;
+            }
 
             var postAlterado = await _postService.EditarPostAsync(post);
             if (postAlterado == null)

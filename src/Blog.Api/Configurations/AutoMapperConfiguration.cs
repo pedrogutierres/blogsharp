@@ -20,7 +20,7 @@ namespace Blog.Api.Configurations
     {
         public DomainToViewModelMappingProfile()
         {
-            CreateMap<Post, PostViewModel>();
+            CreateMap<Post, PostViewModel>().ForMember(dest => dest.ImagemBase64, orig => orig.MapFrom(p => (p.Imagem.Length > 0 ? Convert.ToBase64String(p.Imagem) : null)));
             CreateMap<Autor, PostAutorViewModel>();
             CreateMap<Comentario, PostComentarioViewModel>();
             CreateMap<Autor, AutorViewModel>();

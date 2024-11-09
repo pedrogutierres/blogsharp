@@ -21,6 +21,11 @@
         public string Conteudo { get; set; }
 
         /// <summary>
+        /// Imagem do post em base64
+        /// </summary>
+        public string ImagemBase64 { get; set; }
+
+        /// <summary>
         /// Informa se o posto foi excluído
         /// </summary>
         public bool Excluido { get; set; }

@@ -126,4 +126,4 @@ Listarei aqui alguns débitos técnicos que não foram implementados no projeto,
 
 - Implementar testes unitários.
 - Melhorar a linguagem ubíqua, como post/postagem, cadastrar/registrar, alterar/editar, deletar/excluir, entre outras.
-- Melhorias no sistema de imagem como resolução, padrão, visualização na listagem dinamica
+- Melhorias no sistema de imagem como utilizar um servidor de imagem próprio, ajustes também como resolução e otimizações na visualização na listagem dinamica.
