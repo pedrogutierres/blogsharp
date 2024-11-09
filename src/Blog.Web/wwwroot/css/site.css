@@ -21,3 +21,14 @@ body {
     margin-bottom: 60px;
     font-family: "Inter", sans-serif;
 }
+
+.post-imagem-sobreposta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100vw; /* Define largura da imagem para toda a viewport */
+    max-height: 300px;
+    object-fit: cover;
+    margin-top: -30px !important;
+    z-index: -1;
+}

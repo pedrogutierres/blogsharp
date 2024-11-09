@@ -25,7 +25,14 @@
     {
         <div class="col">
             <div class="card h-100">
-                <img src="~/images/logo.webp" class="card-img-top m-0" style="max-height: 200px">
+                @if (post.Imagem?.Length > 0)
+                {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(post.Imagem)" alt="Post" class="card-img-top m-0" style="height: 200px" />
+                }
+                else
+                {
+                    <img src="~/images/logo.webp" class="card-img-top m-0" style="height: 200px">
+                }
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-top">
                         <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" style="text-decoration: none; color: #000;">

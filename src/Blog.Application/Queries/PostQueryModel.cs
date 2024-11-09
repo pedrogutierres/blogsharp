@@ -23,6 +23,11 @@ namespace Blog.Application.Queries
         public string Conteudo { get; set; }
 
         /// <summary>
+        /// Imagem do post
+        /// </summary>
+        public byte[] Imagem { get; set; }
+
+        /// <summary>
         /// Conteúdo do post sem tags HTML
         /// </summary>
         public string ConteudoNormalizado => CustomHtmlHelpers.RemoverTagsHtml(Conteudo);

@@ -49,12 +49,25 @@ namespace Blog.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titulo,Conteudo")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Titulo,Conteudo")] Post post, IFormFile imagemUpload)
         {
             if (!ModelState.IsValid)
                 return View(post);
 
+            //if (imagemUpload == null)
+            //{
+            //    ModelState.AddModelError(nameof(Post.Imagem), "A imagem é obrigatória");
+            //    return View(post);
+            //}
+
             post.Id = Guid.NewGuid();
+
+            if (imagemUpload != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await imagemUpload.CopyToAsync(memoryStream);
+                post.Imagem = memoryStream.ToArray();
+            }
 
             await _postService.PublicarPostAsync(post);
 
@@ -77,13 +90,20 @@ namespace Blog.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Titulo,Conteudo")] Post post)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Titulo,Conteudo")] Post post, IFormFile imagemUpload)
         {
             if (id != post.Id)
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return View(post);
+
+            if (imagemUpload != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await imagemUpload.CopyToAsync(memoryStream);
+                post.Imagem = memoryStream.ToArray();
+            }
 
             var postAlterado = await _postService.EditarPostAsync(post);
             if (postAlterado == null)

@@ -10,12 +10,19 @@
 
 <hr />
 <div class="row">
-    <form asp-action="Create" id="formPost">
+    <form asp-action="Create" id="formPost" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group col-12 col-md-6">
-            <label asp-for="Titulo" class="control-label"></label>
-            <input asp-for="Titulo" class="form-control" />
-            <span asp-validation-for="Titulo" class="text-danger"></span>
+        <div class="row">
+            <div class="form-group col-12 col-md-6">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group col-12 col-md-6">
+                <label asp-for="Imagem" class="control-label"></label>
+                <input class="form-control" name="imagemUpload" type="file" />
+                <span asp-validation-for="Imagem" class="text-danger"></span>
+            </div>
         </div>
         <div class="form-group">
             <label asp-for="Conteudo" class="control-label"></label>

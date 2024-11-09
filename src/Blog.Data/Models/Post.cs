@@ -14,6 +14,8 @@ namespace Blog.Data.Models
         [Required(ErrorMessage = "O conteúdo é obrigatório")]
         public string Conteudo { get; set; }
 
+        public byte[] Imagem { get; set; }
+
         public bool Excluido { get; set; } = false;
 
         public DateTime DataHoraCriacao{ get; set; } = DateTime.Now;

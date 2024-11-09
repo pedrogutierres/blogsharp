@@ -63,6 +63,7 @@ namespace Blog.Application.Services
                     Id = p.Id,
                     Titulo = p.Titulo,
                     Conteudo = p.Conteudo,
+                    Imagem = p.Imagem,
                     Excluido = p.Excluido,
                     DataHoraCriacao = p.DataHoraCriacao,
                     AutorId = p.AutorId,
@@ -95,6 +96,9 @@ namespace Blog.Application.Services
 
             postOriginal.Titulo = post.Titulo;
             postOriginal.Conteudo = post.Conteudo;
+
+            if (post.Imagem != null)
+                postOriginal.Imagem = post.Imagem;
 
             try
             {
