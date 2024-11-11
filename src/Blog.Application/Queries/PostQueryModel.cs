@@ -1,4 +1,5 @@
 ﻿using Blog.Application.Helpers;
+using System.Text.Json.Serialization;
 
 namespace Blog.Application.Queries
 {
@@ -20,6 +21,7 @@ namespace Blog.Application.Queries
         /// <summary>
         /// Conteúdo do post (podendo ser em HTML)
         /// </summary>
+        [JsonIgnore]
         public string Conteudo { get; set; }
 
         /// <summary>
@@ -30,6 +32,7 @@ namespace Blog.Application.Queries
         /// <summary>
         /// Conteúdo do post sem tags HTML
         /// </summary>
+        [JsonIgnore]
         public string ConteudoNormalizado => CustomHtmlHelpers.RemoverTagsHtml(Conteudo);
 
         /// <summary>
