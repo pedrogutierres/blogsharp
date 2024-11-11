@@ -87,7 +87,7 @@ namespace Blog.Api.Controllers
                     post.Imagem = imageBytes;
             }
 
-            await _postService.PublicarPostAsync(post);
+            await _postService.PublicarPostAsync(post, viewModel.GerarImagemViaIA);
 
             return Ok(new ResponseSuccess(post.Id));
         }
@@ -115,7 +115,7 @@ namespace Blog.Api.Controllers
                     post.Imagem = imageBytes;
             }
 
-            var postAlterado = await _postService.EditarPostAsync(post);
+            var postAlterado = await _postService.EditarPostAsync(post, false);
             if (postAlterado == null)
                 return NotFound();
 

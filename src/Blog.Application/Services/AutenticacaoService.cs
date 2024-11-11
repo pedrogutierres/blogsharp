@@ -8,7 +8,7 @@ using System.Data.Common;
 
 namespace Blog.Application.Services
 {
-    public class AutenticacaoService
+    public sealed class AutenticacaoService
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ApplicationDbContext _context;

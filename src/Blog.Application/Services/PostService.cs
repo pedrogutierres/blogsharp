@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Blog.Application.Services
 {
-    public class PostService
+    public sealed class PostService
     {
         private const string CacheKey_Posts = "Posts";
         private const string CacheKey_PostId = "Post";
@@ -15,12 +15,14 @@ namespace Blog.Application.Services
         private readonly ApplicationDbContext _context;
         private readonly IUser _user;
         private readonly IMemoryCache _cache;
+        private readonly OpenAIService _openAIService;
 
-        public PostService(ApplicationDbContext context, IUser user, IMemoryCache cache)
+        public PostService(ApplicationDbContext context, IUser user, IMemoryCache cache, OpenAIService openAIService)
         {
             _context = context;
             _user = user;
             _cache = cache;
+            _openAIService = openAIService;
         }
 
         public async Task<IEnumerable<PostQueryModel>> ObterPostsAsync(bool meusPosts = false)
@@ -74,9 +76,12 @@ namespace Blog.Application.Services
 
         public Task<Post> ObterPostPorIdAsync(Guid id) => _cache.GetOrCreateAsync($"{CacheKey_PostId}-{id}", entry => _context.Posts.Include(p => p.Autor).FirstOrDefaultAsync(m => m.Id == id));
 
-        public async Task<bool> PublicarPostAsync(Post post)
+        public async Task<bool> PublicarPostAsync(Post post, bool gerarImagemIA)
         {
             post.AutorId = _user.UsuarioId().Value;
+
+            if (gerarImagemIA && post.Imagem == null)
+                post.Imagem = await _openAIService.BaixarImagem(await _openAIService.GerarImagem(post.Conteudo));
 
             _context.Add(post);
 
@@ -85,7 +90,7 @@ namespace Blog.Application.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Post> EditarPostAsync(Post post)
+        public async Task<Post> EditarPostAsync(Post post, bool gerarImagemIA)
         {
             var postOriginal = await _context.Posts.FindAsync(post.Id);
             if (postOriginal == null)
@@ -93,6 +98,9 @@ namespace Blog.Application.Services
 
             if (!UsuarioAutorizado(postOriginal.AutorId))
                 throw new UnauthorizedAccessException("Usuário não autorizado a editar o post pois não pertence ao mesmo.");
+
+            if (gerarImagemIA && post.Imagem == null)
+                post.Imagem = await _openAIService.BaixarImagem(await _openAIService.GerarImagem(post.Conteudo));
 
             postOriginal.Titulo = post.Titulo;
             postOriginal.Conteudo = post.Conteudo;

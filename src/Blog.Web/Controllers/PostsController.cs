@@ -1,17 +1,21 @@
-﻿using Blog.Application.Services;
+﻿using Blog.Application.Helpers;
+using Blog.Application.Services;
 using Blog.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Blog.Web.Controllers
 {
     public class PostsController : Controller
     {
         private readonly PostService _postService;
+        private readonly OpenAIOptions _options;
 
-        public PostsController(PostService postService)
+        public PostsController(PostService postService, IOptions<OpenAIOptions> options)
         {
             _postService = postService;
+            _options = options.Value;
         }
 
         public IActionResult Index()
@@ -43,22 +47,18 @@ namespace Blog.Web.Controllers
         [Authorize]
         public IActionResult Create()
         {
+            ViewData["GerarImagemIA"] = !string.IsNullOrEmpty(_options?.ApiKey) ? "true" : "false";
+
             return View();
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titulo,Conteudo")] Post post, IFormFile imagemUpload)
+        public async Task<IActionResult> Create([Bind("Id,Titulo,Conteudo")] Post post, IFormFile imagemUpload, IFormCollection form)
         {
             if (!ModelState.IsValid)
                 return View(post);
-
-            //if (imagemUpload == null)
-            //{
-            //    ModelState.AddModelError(nameof(Post.Imagem), "A imagem é obrigatória");
-            //    return View(post);
-            //}
 
             post.Id = Guid.NewGuid();
 
@@ -69,7 +69,7 @@ namespace Blog.Web.Controllers
                 post.Imagem = memoryStream.ToArray();
             }
 
-            await _postService.PublicarPostAsync(post);
+            await _postService.PublicarPostAsync(post, form["gerarImagemIA"].ToString().Equals("on", StringComparison.CurrentCultureIgnoreCase));
 
             return RedirectToAction(nameof(Details), new { id = post.Id });
         }
@@ -105,7 +105,7 @@ namespace Blog.Web.Controllers
                 post.Imagem = memoryStream.ToArray();
             }
 
-            var postAlterado = await _postService.EditarPostAsync(post);
+            var postAlterado = await _postService.EditarPostAsync(post, false);
             if (postAlterado == null)
                 return NotFound();
 

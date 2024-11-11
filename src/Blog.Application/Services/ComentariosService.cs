@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Application.Services
 {
-    public class ComentariosService
+    public sealed class ComentariosService
     {
         private readonly ApplicationDbContext _context;
         private readonly IUser _user;

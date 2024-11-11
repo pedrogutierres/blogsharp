@@ -29,5 +29,10 @@ namespace Blog.Api.ViewModels.Posts
         /// Imagem do post em base64
         /// </summary>
         public string ImagemBase64 { get; set; }
+
+        /// <summary>
+        /// Gerar imagem via IA, apenas se estiver habilitado
+        /// </summary>
+        public bool GerarImagemViaIA { get; set; }
     }
 }

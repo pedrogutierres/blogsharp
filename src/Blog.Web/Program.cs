@@ -1,4 +1,5 @@
 using Blog.Application.Extensions;
+using Blog.Application.Helpers;
 using Blog.Application.Identity;
 using Blog.Application.Services;
 using Blog.Data;
@@ -40,6 +41,9 @@ builder.Services.AddScoped<IUser, AspNetUser>();
 builder.Services.AddScoped<AutenticacaoService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<ComentariosService>();
+builder.Services.AddScoped<OpenAIService>();
+
+builder.Services.Configure<OpenAIOptions>(builder.Configuration.GetSection("OpenAIOptions"));
 
 var app = builder.Build();
 
