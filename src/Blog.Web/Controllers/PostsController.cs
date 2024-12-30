@@ -105,7 +105,7 @@ namespace Blog.Web.Controllers
                 post.Imagem = memoryStream.ToArray();
             }
 
-            var postAlterado = await _postService.EditarPostAsync(post, false);
+            var postAlterado = await _postService.EditarPostAsync(post);
             if (postAlterado == null)
                 return NotFound();
 

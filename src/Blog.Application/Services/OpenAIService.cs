@@ -32,9 +32,11 @@ namespace Blog.Application.Services
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _options.ApiKey);
 
+                var prompt = "Gerar uma imagem que vai ser visualizada por usuários em um blog, considerando o título da postagem a seguir: " + contexto;
+
                 var requestContent = new
                 {
-                    prompt = contexto.Length > 1000 ? contexto[..1000] : contexto,
+                    prompt = prompt.Length > 1000 ? prompt[..1000] : prompt,
                     n = 1,
                     size = "512x512"
                 };

@@ -81,7 +81,7 @@ namespace Blog.Application.Services
             post.AutorId = _user.UsuarioId().Value;
 
             if (gerarImagemIA && post.Imagem == null)
-                post.Imagem = await _openAIService.BaixarImagem(await _openAIService.GerarImagem(post.Conteudo));
+                post.Imagem = await _openAIService.BaixarImagem(await _openAIService.GerarImagem(post.Titulo));
 
             _context.Add(post);
 
@@ -90,7 +90,7 @@ namespace Blog.Application.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Post> EditarPostAsync(Post post, bool gerarImagemIA)
+        public async Task<Post> EditarPostAsync(Post post)
         {
             var postOriginal = await _context.Posts.FindAsync(post.Id);
             if (postOriginal == null)
@@ -98,9 +98,6 @@ namespace Blog.Application.Services
 
             if (!UsuarioAutorizado(postOriginal.AutorId))
                 throw new UnauthorizedAccessException("Usuário não autorizado a editar o post pois não pertence ao mesmo.");
-
-            if (gerarImagemIA && post.Imagem == null)
-                post.Imagem = await _openAIService.BaixarImagem(await _openAIService.GerarImagem(post.Conteudo));
 
             postOriginal.Titulo = post.Titulo;
             postOriginal.Conteudo = post.Conteudo;
