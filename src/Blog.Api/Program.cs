@@ -26,6 +26,7 @@ builder.Services.AddScoped<IUser, AspNetUser>();
 builder.Services.AddScoped<AutenticacaoService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<ComentariosService>();
+builder.Services.AddScoped<OpenAIService>();
 
 var app = builder.Build();
 
